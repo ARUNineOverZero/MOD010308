@@ -154,6 +154,7 @@ MonoBehaviour:
   _planeManager: {fileID: 923425326}
   _raycastManager: {fileID: 923425325}
   _anchorManager: {fileID: 923425324}
+  _interactionManager: {fileID: 1813481513}
   _worldRoot: {fileID: 1914346661}
 --- !u!4 &99005344
 Transform:
@@ -658,6 +659,7 @@ GameObject:
   - component: {fileID: 1813481508}
   - component: {fileID: 1813481507}
   - component: {fileID: 1813481512}
+  - component: {fileID: 1813481513}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -917,6 +919,18 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &1813481513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1813481505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8119e00b4c399847a102067ff1b4cef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EscapeWall.InteractionManager
 --- !u!1 &1914346661 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5119646245812776312, guid: 135f643b8831a314998a194786bda738, type: 3}

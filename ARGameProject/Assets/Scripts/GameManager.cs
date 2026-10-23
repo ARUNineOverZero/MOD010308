@@ -1,3 +1,4 @@
+using EscapeWall;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
@@ -32,6 +33,9 @@ public class GameManager : MonoBehaviour
      public ARRaycastManager RaycastManager => _raycastManager;
     [SerializeField] private  ARAnchorManager _anchorManager;
      public ARAnchorManager AnchorManager => _anchorManager;
+
+     [SerializeField] private InteractionManager _interactionManager;
+     public InteractionManager InteractionManager => _interactionManager;
 
     [SerializeField] private GameObject _worldRoot;
      public GameObject WorldRoot => _worldRoot;
