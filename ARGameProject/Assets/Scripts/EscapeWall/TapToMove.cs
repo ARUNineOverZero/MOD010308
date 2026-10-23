@@ -14,14 +14,14 @@ namespace EscapeWall
 
     public class TapToMove : MonoBehaviour, ITapable
     {
-        public float speed;
-        
+        public float speed = 1f;
+
         private Coroutine _moveRoutine;
 
         public void Tap()
         {
             if (_moveRoutine == null)
-                StartCoroutine(Move(-transform.localPosition.z));
+                _moveRoutine = StartCoroutine(Move(-transform.localPosition.z));
         }
 
         private IEnumerator Move(float target)
@@ -30,7 +30,7 @@ namespace EscapeWall
             float start = transform.localPosition.z;
             var position = transform.localPosition;
 
-            while (current <= 1)
+            while (current < 1)
             {
                 current += speed * Time.deltaTime;
 
@@ -41,6 +41,8 @@ namespace EscapeWall
                 transform.localPosition = position;
                 yield return null;
             }
+
+            _moveRoutine = null;
         }
     }
 }

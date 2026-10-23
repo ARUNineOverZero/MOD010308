@@ -6,6 +6,7 @@ namespace EscapeWall
     public class InteractionManager : MonoBehaviour
     {
         private Camera _arCamera;
+        public float interactionDistance = 5f;
         private void Awake()
         {
             _arCamera = GameManager.Instance.ArCamera;
@@ -20,7 +21,7 @@ namespace EscapeWall
 
             var ray = _arCamera.ScreenPointToRay(screenPosition);
 
-            if (Physics.Raycast(ray, out RaycastHit hit, 1f) && hit.transform.TryGetComponent(out ITapable t))
+            if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance) && hit.transform.TryGetComponent(out ITapable t))
                 t.Tap();
         }
     }
