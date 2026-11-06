@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 namespace EscapeWall
@@ -18,7 +20,7 @@ namespace EscapeWall
         private bool _isLocked;
         private Vector3 _previousPosition;
 
-        void Start()
+        private void Start()
         {
             if (arCamera == null)
                 arCamera = Camera.main;
@@ -29,12 +31,12 @@ namespace EscapeWall
                 blackScreen.SetActive(false);
         }
 
-        void Update()
+        private void Update()
         {
             Vector3 currentPos = arCamera.transform.position;
 
-            bool sphereOverlapping = IsSphereOverlapping(currentPos);
-            bool wasOverlapping    = IsSphereOverlapping(_previousPosition);
+            bool sphereOverlapping = IsSphereOverlapping(currentPos, out Collider[] currentHits) && !CollidersContainARCameraInsideLockIgnore(currentHits);
+            bool wasOverlapping    = IsSphereOverlapping(_previousPosition, out Collider[] previousHits) && !CollidersContainARCameraInsideLockIgnore(previousHits);
 
             if (!_isLocked && sphereOverlapping && !wasOverlapping)
             {
@@ -49,12 +51,22 @@ namespace EscapeWall
             _previousPosition = currentPos;
         }
 
-        bool IsSphereOverlapping(Vector3 center)
+        private bool IsSphereOverlapping(Vector3 center, out Collider[] hits)
         {
-            return Physics.CheckSphere(center, sphereRadius, blockingLayers);
+            hits = Physics.OverlapSphere(center, sphereRadius, blockingLayers);
+            return hits.Length > 0; 
         }
 
-        bool HasLineOfSight(Vector3 from)
+        private bool CollidersContainARCameraInsideLockIgnore(Collider[] hits)
+        {
+            return hits.Any(x =>
+            {
+                var arCameraIgnore = x.GetComponent<ARCameraInsideLockIgnore>();
+                return arCameraIgnore != null;
+            });
+        }
+
+        private bool HasLineOfSight(Vector3 from)
         {
             Vector3 dir = _lockPosition - from;
             float dist = dir.magnitude;
@@ -65,7 +77,7 @@ namespace EscapeWall
             return !Physics.Raycast(from, dir.normalized, dist, blockingLayers);
         }
 
-        void SetLock(bool locked)
+        private void SetLock(bool locked)
         {
             _isLocked = locked;
 
@@ -75,7 +87,7 @@ namespace EscapeWall
             Debug.Log(locked ? "Screen Lock" : "Screen Unlock");
         }
 
-        void OnDrawGizmosSelected()
+        private void OnDrawGizmosSelected()
         {
             if (arCamera == null) return;
             Gizmos.color = _isLocked ? Color.red : Color.green;
