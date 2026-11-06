@@ -46,7 +46,6 @@ namespace EscapeWall
 
             if (_isLocked && !sphereOverlapping && HasLineOfSight(currentPos))
                 SetLock(false);
-        
 
             _previousPosition = currentPos;
         }
@@ -59,11 +58,7 @@ namespace EscapeWall
 
         private bool CollidersContainARCameraInsideLockIgnore(Collider[] hits)
         {
-            return hits.Any(x =>
-            {
-                var arCameraIgnore = x.GetComponent<ARCameraInsideLockIgnore>();
-                return arCameraIgnore != null;
-            });
+            return hits.Any(x => x.gameObject.tag == "ARCameraLockIgnore");
         }
 
         private bool HasLineOfSight(Vector3 from)

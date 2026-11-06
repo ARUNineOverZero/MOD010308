@@ -412,7 +412,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.5019608}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.78431374}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -937,6 +937,14 @@ PrefabInstance:
     - target: {fileID: 5119646245812776312, guid: 135f643b8831a314998a194786bda738, type: 3}
       propertyPath: m_Name
       value: WorldRoot
+      objectReference: {fileID: 0}
+    - target: {fileID: 8577257038395156158, guid: 135f643b8831a314998a194786bda738, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8577257038395156158, guid: 135f643b8831a314998a194786bda738, type: 3}
+      propertyPath: m_TagString
+      value: ARCameraLockIgnore
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
