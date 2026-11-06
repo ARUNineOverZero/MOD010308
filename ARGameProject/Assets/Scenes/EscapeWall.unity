@@ -412,7 +412,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.78431374}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.98039216}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -894,6 +894,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 249243811290036737, guid: 135f643b8831a314998a194786bda738, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.31000006
+      objectReference: {fileID: 0}
     - target: {fileID: 579551675974728143, guid: 135f643b8831a314998a194786bda738, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.41252
@@ -934,6 +938,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3744385281663026861, guid: 135f643b8831a314998a194786bda738, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.31
+      objectReference: {fileID: 0}
     - target: {fileID: 5119646245812776312, guid: 135f643b8831a314998a194786bda738, type: 3}
       propertyPath: m_Name
       value: WorldRoot
@@ -947,7 +955,8 @@ PrefabInstance:
       value: ARCameraLockIgnore
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 2144567399664703645, guid: 135f643b8831a314998a194786bda738, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8577257038395156158, guid: 135f643b8831a314998a194786bda738, type: 3}
