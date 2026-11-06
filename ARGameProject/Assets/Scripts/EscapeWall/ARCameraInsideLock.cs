@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 namespace EscapeWall
@@ -11,7 +10,7 @@ namespace EscapeWall
         public GameObject blackScreen;
 
         [Header("Sphere Check")]
-        public float sphereRadius = 0.15f;
+        public float sphereRadius = 0.05f;
 
         [Header("Filtering")]
         public LayerMask blockingLayers = ~0;  
