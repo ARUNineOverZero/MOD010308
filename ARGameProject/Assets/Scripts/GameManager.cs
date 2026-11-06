@@ -1,6 +1,7 @@
 using EscapeWall;
 using Unity.XR.CoreUtils;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.XR.ARFoundation;
 
 public class GameManager : MonoBehaviour
@@ -43,6 +44,8 @@ public class GameManager : MonoBehaviour
      private Side _cameraSideOfWall = Side.None;
      private Side CameraSideOfWall => _cameraSideOfWall;
 
+     public UnityEvent<string> onSideOfWallChanged;
+
     private void Awake()
     {
         StartInstance(this);
@@ -59,8 +62,10 @@ public class GameManager : MonoBehaviour
 
         if(side == _cameraSideOfWall) return;
 
+
+
         _cameraSideOfWall = side;
-        Debug.Log($"Side of wall has changed: {side}");
+        onSideOfWallChanged?.Invoke(_cameraSideOfWall.ToString());
     }
 
     public Side GetSideOfTheWall(Vector3 worldPosition)
