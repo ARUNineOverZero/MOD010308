@@ -931,6 +931,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8119e00b4c399847a102067ff1b4cef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EscapeWall.InteractionManager
+  interactionDistance: 5
 --- !u!1 &1914346661 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5119646245812776312, guid: 135f643b8831a314998a194786bda738, type: 3}
