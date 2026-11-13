@@ -22,10 +22,8 @@ namespace EscapeWall
             _arCamera = GameManager.Instance.ArCamera;
         }
 
-        public void Update()
-        {
-            PlaceWorldRoot();
-        }
+        public void Update() => PlaceWorldRoot();
+
 
         public void PlaceWorldRoot()
         {
@@ -41,7 +39,7 @@ namespace EscapeWall
                 Pose hitPose = _hits[0].pose;
                 var position = hitPose.position;
                 var t = _worldRoot.transform;
-                
+
                 t.SetPositionAndRotation(position, hitPose.rotation);
 
                 t.LookAt(_arCamera.transform.position);
@@ -49,8 +47,10 @@ namespace EscapeWall
                 var localEularAngles = t.localEulerAngles;
 
                 t.localEulerAngles = new Vector3(0, localEularAngles.y, 0);
-                
+
                 _worldRoot.SetActive(true);
+
+                GameManager.Instance.SetPlaneVisibility(false);
             }
         }
     }

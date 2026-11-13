@@ -13,12 +13,9 @@ public class TapToPlace : MonoBehaviour
     public Transform model;
     
     private readonly List<ARRaycastHit> _hits = new List<ARRaycastHit>();
- 
-    void Start()
-    {
-        model.gameObject.SetActive(false);
-    }
- 
+
+    void Start() => model.gameObject.SetActive(false);
+
     void Update()
     {
         if (Pointer.current == null || !Pointer.current.press.wasPressedThisFrame)
