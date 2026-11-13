@@ -1,5 +1,3 @@
-using EscapeWall;
-using Mono.Cecil.Cil;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.Events;
