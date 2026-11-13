@@ -2,8 +2,6 @@ using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
-
-
 namespace EscapeWall.PaperMarker
 {
     public class PaperObjectController : MonoBehaviour
@@ -11,15 +9,9 @@ namespace EscapeWall.PaperMarker
         [SerializeField] private ARTrackedImageManager _trackedImageManager;
         [SerializeField] private Transform _controlledObject;
 
-        private void OnEnable()
-        {
-            _trackedImageManager.trackablesChanged.AddListener(OnTrackablesChanged);
-        }
+        private void OnEnable() => _trackedImageManager.trackablesChanged.AddListener(OnTrackablesChanged);
 
-        private void OnDisable()
-        {
-            _trackedImageManager.trackablesChanged.RemoveListener(OnTrackablesChanged);
-        }
+        private void OnDisable() => _trackedImageManager.trackablesChanged.RemoveListener(OnTrackablesChanged);
 
         private void OnTrackablesChanged(ARTrackablesChangedEventArgs<ARTrackedImage> args)
         {

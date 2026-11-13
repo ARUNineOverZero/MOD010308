@@ -1,4 +1,5 @@
 using EscapeWall;
+using Mono.Cecil.Cil;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.Events;
@@ -45,10 +46,9 @@ namespace EscapeWall
 
         [SerializeField] private GameObject _worldRoot;
         public GameObject WorldRoot => _worldRoot;
-
+        public bool isCheckingSideOfWall = true;
         private Side _cameraSideOfWall = Side.None;
         private Side CameraSideOfWall => _cameraSideOfWall;
-
         public UnityEvent<string> onSideOfWallChanged;
 
         private void Awake() => StartInstance(this);
@@ -57,6 +57,7 @@ namespace EscapeWall
 
         private void CheckSideOfWall()
         {
+            if (!isCheckingSideOfWall) return;
             var side = GetSideOfTheWall(_arCamera.transform.position);
 
             if (side == _cameraSideOfWall) return;
