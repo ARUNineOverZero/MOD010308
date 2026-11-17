@@ -47,7 +47,7 @@ namespace EscapeWall
         public GameObject WorldRoot => _worldRoot;
         public bool isCheckingSideOfWall = true;
         private Side _cameraSideOfWall = Side.None;
-        private Side CameraSideOfWall => _cameraSideOfWall;
+        public Side CameraSideOfWall => _cameraSideOfWall;
         public UnityEvent<string> onSideOfWallChanged;
 
         private void Awake() => StartInstance(this);

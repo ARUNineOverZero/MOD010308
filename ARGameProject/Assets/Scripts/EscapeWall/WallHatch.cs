@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace EscapeWall
 {
@@ -8,19 +9,30 @@ namespace EscapeWall
         [SerializeField] private Transform _hatch;
         [SerializeField] private float _speed = 1f;
         [SerializeField] private float _maxRotation = 90f;
+        private float _target;
 
         private bool _isOpen;
         private float _currentPosition;
         private Coroutine _openCloseCoroutine;
+
+        public UnityEvent OnOpen;
+        public UnityEvent OnClose;
+        public UnityEvent OnClosed;
 
         private void Start()
         {
             ApplyRotation();
         }
 
-        private void ToggleOpen()
+        public void Open()
         {
-            _isOpen = !_isOpen;
+            if(_isOpen)
+                return;
+                
+            _isOpen = true;
+            _target = 1;
+
+            OnOpen?.Invoke();
 
             if (_openCloseCoroutine != null)
                 return;
@@ -28,19 +40,45 @@ namespace EscapeWall
             _openCloseCoroutine = StartCoroutine(OpenCloseHatch());
         }
 
+        public void Close()
+        {
+             if(!_isOpen)
+                return;
+
+            _isOpen = false;
+            _target = 0f;
+
+            OnClose?.Invoke();
+
+            if (_openCloseCoroutine != null)
+                return;
+
+            _openCloseCoroutine = StartCoroutine(OpenCloseHatch());
+        }
+
+        private void ToggleOpen()
+        {
+            if (_isOpen)
+                Close();
+            else
+                Open();
+        }
+
         private IEnumerator OpenCloseHatch()
         {
-            float target = _isOpen ? 1f : 0f;
+            float originalTarget = _target;
 
-            while (!Mathf.Approximately(_currentPosition, target))
+            while (!Mathf.Approximately(_currentPosition, _target))
             {
-                _currentPosition = Mathf.MoveTowards(_currentPosition, target, _speed * Time.deltaTime);
+                _currentPosition = Mathf.MoveTowards(_currentPosition, _target, _speed * Time.deltaTime);
                 ApplyRotation();
                 yield return null;
             }
 
-            _currentPosition = target;
+            _currentPosition = _target;
             ApplyRotation();
+            if(!_isOpen)
+                OnClosed?.Invoke();
             _openCloseCoroutine = null;
         }
 

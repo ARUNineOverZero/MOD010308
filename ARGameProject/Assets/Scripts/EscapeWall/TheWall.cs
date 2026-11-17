@@ -12,5 +12,15 @@ namespace EscapeWall
 
         public void ActivatePlayerTwo() => _playerTwo.SetActive(true);
         public void DeactivePlayerTwo()  => _playerTwo.SetActive(false);
+
+        public void DeactivateNonPlayerSide()
+        {
+            var side = GameManager.Instance.CameraSideOfWall;
+
+            if(side == Side.Back)
+                DeactivePlayerTwo();
+            else
+                DeactivePlayerOne();
+        }
     }
 }
