@@ -14,19 +14,16 @@ namespace EscapeWall
         [SerializeField] private Camera _arCamera;
         [SerializeField] private GameObject _worldRoot;
 
-
         [Header("Prefabs")]
         [SerializeField] private GameObject _pointMarkerPrefab;
         [SerializeField] private Material _planeMaterial;
-
+        private Material _arrowMaterial;
         private readonly List<ARRaycastHit> _hits = new();
         private readonly List<GameObject> _tempMarkers = new();
         private PlacementStage _stage = PlacementStage.NotSet;
         private Coroutine _placementRoutine;
-
         private GameObject _previewPlane;
         private const float MinSize = 3f;
-
         private enum PlacementStage
         {
             NotSet = -1,
@@ -45,6 +42,9 @@ namespace EscapeWall
 
             if (_worldRoot != null)
                 _worldRoot.SetActive(false);
+
+            if(_pointMarkerPrefab != null && _pointMarkerPrefab.TryGetComponent(out MeshRenderer mr))
+                _arrowMaterial = mr.sharedMaterial;
 
             BeginPlacement();
         }
@@ -127,6 +127,8 @@ namespace EscapeWall
                 _area.pointA = hitPosition;
                 SpawnMarker(_area.pointA);
                 _stage = PlacementStage.GetSecondPoint;
+                SpawnMarker(_area.pointA);
+                GameManager.Instance.SetPlaneVisibility(false);
             }
         }
 
@@ -135,6 +137,7 @@ namespace EscapeWall
             var cameraPosition = _arCamera.transform.position;
             cameraPosition.y = _area.pointA.y;
             _area.pointB = cameraPosition;
+            _tempMarkers[^1].transform.position = _area.pointB + (_area.pointB - _area.pointA).normalized * .5f;
             UpdatePreviewPlane();
 
             if (Pointer.current != null & Pointer.current.press.wasPressedThisFrame)
@@ -162,11 +165,23 @@ namespace EscapeWall
             _previewPlane.transform.rotation = _area.Rotation;
             _previewPlane.transform.localScale = _area.PreviewScale;
 
-            Color color = _area.IsTooSmall(MinSize) ? Color.red : Color.green;
-            color.a = 0.45f;
-            
+            Color color;
+            if (_area.IsTooSmall(MinSize))
+            {
+                color = Color.red;
+                color.a = 0f;
+            }
+            else
+            {
+                color = Color.green;
+                color.a = .8f;
+            }
+
             if (_planeMaterial != null)
                 _planeMaterial.color = color;
+
+            if(_arrowMaterial != null)
+                 _arrowMaterial.color = color;
         }
 
         private void FinalizePlacement()
@@ -184,8 +199,7 @@ namespace EscapeWall
             _worldRoot.transform.rotation = rotation;
 
             _worldRoot.SetActive(true);
-            GameManager.Instance.SetPlaneVisibility(false);
-            GameManager.Instance.SetCameraLockPosition(center + Vector3.up + Vector3.back * 1.5f);
+            //GameManager.Instance.SetCameraLockPosition(center + Vector3.up + Vector3.back * 1.5f);
         }
 
         private void SpawnMarker(Vector3 position)
