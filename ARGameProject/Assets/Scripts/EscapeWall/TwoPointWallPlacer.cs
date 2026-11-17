@@ -139,8 +139,8 @@ namespace EscapeWall
         {
             if (TryGetRaycastHitPosition(out Vector3 hitPosition))
             {
-                _area.pointB = hitPosition;
-                SpawnMarker(_area.pointB);
+                _area.pointA = hitPosition;
+                SpawnMarker(_area.pointA);
                 _stage = PlacementStage.GetSecondPoint;
             }
         }
@@ -148,8 +148,8 @@ namespace EscapeWall
         private void UpdateSecondPointStage()
         {
             var cameraPosition = _arCamera.transform.position;
-            cameraPosition.y = _area.pointB.y;
-            _area.pointA = cameraPosition;
+            cameraPosition.y = _area.pointA.y;
+            _area.pointB = cameraPosition;
             UpdatePreviewPlane();
 
             if (Pointer.current != null & Pointer.current.press.wasPressedThisFrame)
