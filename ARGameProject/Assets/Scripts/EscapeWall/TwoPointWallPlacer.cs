@@ -9,20 +9,15 @@ namespace EscapeWall
 {
     public class TwoPointWallPlacer : MonoBehaviour
     {
-        private float _groundHeight;
-        private Vector3 _firstPoint;
-        private Vector3 _secondPoint;
-
+        private SquareArea _area;
         private ARRaycastManager _raycastManager;
         [SerializeField] private Camera _arCamera;
         [SerializeField] private GameObject _worldRoot;
 
         [Header("Prefabs")]
         [SerializeField] private GameObject _pointMarkerPrefab;
-
         private readonly List<ARRaycastHit> _hits = new();
         private readonly List<GameObject> _tempMarkers = new();
-
         private PlacementStage _stage = PlacementStage.NotSet;
         private Coroutine _placementRoutine;
 
@@ -32,10 +27,9 @@ namespace EscapeWall
         private enum PlacementStage
         {
             NotSet = -1,
-            GetGround = 0,
-            GetFirstPoint = 1,
-            GetSecondPoint = 2,
-            StageSet = 3
+            GetFirstPoint = 0,
+            GetSecondPoint = 1,
+            StageSet = 2
         }
 
         private void Awake()
@@ -56,7 +50,7 @@ namespace EscapeWall
         {
             CancelPlacement();
 
-            _stage = PlacementStage.GetGround;
+            _stage = PlacementStage.GetFirstPoint;
             if (_worldRoot != null)
                 _worldRoot.SetActive(false);
 
@@ -85,9 +79,6 @@ namespace EscapeWall
             {
                 switch (_stage)
                 {
-                    case PlacementStage.GetGround:
-                        UpdateGroundStage();
-                        break;
                     case PlacementStage.GetFirstPoint:
                         UpdateFirstPointStage();
                         break;
@@ -144,46 +135,35 @@ namespace EscapeWall
             return false;
         }
 
-        private void UpdateGroundStage()
-        {
-            if (TryGetRaycastHitPosition(out Vector3 hitPosition))
-            {
-                _groundHeight = hitPosition.y;
-                _stage = PlacementStage.GetFirstPoint;
-            }
-        }
-
         private void UpdateFirstPointStage()
         {
             if (TryGetRaycastHitPosition(out Vector3 hitPosition))
             {
-                hitPosition.y = _groundHeight;
-                _firstPoint = hitPosition;
-                SpawnMarker(_firstPoint);
+                _area.pointB = hitPosition;
+                SpawnMarker(_area.pointB);
                 _stage = PlacementStage.GetSecondPoint;
             }
         }
 
         private void UpdateSecondPointStage()
         {
-            if (TryGetCurrentPointerHit(out Vector3 currentHit))
-            {
-                currentHit.y = _groundHeight;
-                UpdatePreviewPlane(_firstPoint, currentHit);
-            }
+            var cameraPosition = _arCamera.transform.position;
+            cameraPosition.y = _area.pointB.y;
+            _area.pointA = cameraPosition;
+            UpdatePreviewPlane();
 
-            if (TryGetRaycastHitPosition(out Vector3 hitPosition))
+            if (Pointer.current != null & Pointer.current.press.wasPressedThisFrame)
             {
-                hitPosition.y = _groundHeight;
-                _secondPoint = hitPosition;
-                SpawnMarker(_secondPoint);
-                UpdatePreviewPlane(_firstPoint, _secondPoint);
+                UpdatePreviewPlane();
                 _stage = PlacementStage.StageSet;
             }
         }
 
-        private void UpdatePreviewPlane(Vector3 pointA, Vector3 pointB)
+        private void UpdatePreviewPlane()
         {
+            if (!_area.IsValid)
+                return;
+
             if (_previewPlane == null)
             {
                 _previewPlane = GameObject.CreatePrimitive(PrimitiveType.Plane);
@@ -191,30 +171,11 @@ namespace EscapeWall
                 Destroy(_previewPlane.GetComponent<Collider>());
             }
 
-            Vector3 diagonal = pointA - pointB;
-            diagonal.y = 0f;
+            _previewPlane.transform.position = _area.Center;
+            _previewPlane.transform.rotation = _area.Rotation;
+            _previewPlane.transform.localScale = _area.PreviewScale;
 
-            float diagonalLength = diagonal.magnitude;
-            if (diagonalLength < 0.001f)
-                return;
-
-            float sideLength = diagonalLength / Mathf.Sqrt(2f);
-
-            Vector3 center = (pointA + pointB) * 0.5f;
-            center.y = _groundHeight + 0.01f;
-
-            Vector3 forwards = Quaternion.Euler(0f, 45f, 0f) * diagonal.normalized;
-            forwards.y = 0f;
-            forwards.Normalize();
-
-            Quaternion rotation = Quaternion.LookRotation(forwards, Vector3.up);
-
-            _previewPlane.transform.position = center;
-            _previewPlane.transform.rotation = rotation;
-            _previewPlane.transform.localScale = new Vector3(sideLength / 10f, 1f, sideLength / 10f);
-
-            bool tooSmall = sideLength < MinSize;
-            Color color = tooSmall ? Color.red : Color.green;
+            Color color = _area.IsTooSmall(MinSize) ? Color.red : Color.green;
             color.a = 0.45f;
 
             var renderer = _previewPlane.GetComponent<MeshRenderer>();
@@ -230,24 +191,12 @@ namespace EscapeWall
             if (_worldRoot == null)
                 return;
 
-            float width = Mathf.Abs(_firstPoint.x - _secondPoint.x);
-            float length = Mathf.Abs(_firstPoint.z - _secondPoint.z);
-
-            Vector3 center = new Vector3(
-                (_firstPoint.x + _secondPoint.x) * 0.5f,
-                _groundHeight,
-                (_firstPoint.z + _secondPoint.z) * 0.5f
-            );
-
-            Vector3 faceDirection = _firstPoint - center;
-            faceDirection.y = 0f;
-            if (faceDirection.sqrMagnitude < 0.001f)
-                faceDirection = Vector3.forward;
-
-            Quaternion rotation = Quaternion.LookRotation(faceDirection.normalized, Vector3.up);
+            Vector3 center = _area.Center;
+            Quaternion rotation = Quaternion.LookRotation(_area.Forwards, Vector3.up);
 
             _worldRoot.transform.position = center;
             _worldRoot.transform.rotation = rotation;
+
             _worldRoot.SetActive(true);
             GameManager.Instance.SetPlaneVisibility(false);
         }
@@ -278,5 +227,56 @@ namespace EscapeWall
                 _previewPlane = null;
             }
         }
+    }
+
+    public struct SquareArea
+    {
+        public Vector3 pointA;
+        public Vector3 pointB;
+
+        public Vector3 Diagonal
+        {
+            get
+            {
+                Vector3 d = pointA - pointB;
+                d.y = 0f;
+                return d;
+            }
+        }
+
+        public float DiagonalLength => Diagonal.magnitude;
+
+        public float SideLength => DiagonalLength / Mathf.Sqrt(2f);
+
+        public Vector3 Center
+        {
+            get
+            {
+                Vector3 c = (pointA + pointB) * 0.5f;
+                c.y = pointA.y + 0.01f;
+                return c;
+            }
+        }
+
+        public Vector3 Forwards
+        {
+            get
+            {
+                if (DiagonalLength < 0.001f)
+                    return Vector3.forward;
+
+                Vector3 forwards = Quaternion.Euler(0f, 45f, 0f) * Diagonal.normalized;
+                forwards.y = 0f;
+                return forwards.normalized;
+            }
+        }
+
+        public Quaternion Rotation => Quaternion.LookRotation(Forwards, Vector3.up);
+
+        public Vector3 PreviewScale => new Vector3(SideLength / 10f, 1f, SideLength / 10f);
+
+        public bool IsTooSmall(float minSize) => SideLength < minSize;
+
+        public bool IsValid => DiagonalLength >= 0.001f;
     }
 }
