@@ -21,8 +21,11 @@ namespace EscapeWall
 
             var ray = _arCamera.ScreenPointToRay(screenPosition);
 
-            if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance) && hit.transform.TryGetComponent(out ITapable t))
-                t.Tap();
+            if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance))
+            {
+                ITapable tappable = hit.transform.GetComponentInParent<ITapable>();
+                tappable?.Tap();
+            }
         }
     }
 }
