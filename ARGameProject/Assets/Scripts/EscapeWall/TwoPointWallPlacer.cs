@@ -199,6 +199,7 @@ namespace EscapeWall
 
             _worldRoot.SetActive(true);
             GameManager.Instance.SetPlaneVisibility(false);
+            GameManager.Instance.SetCameraLockPosition(center + Vector3.up + Vector3.back * 1.5f);
         }
 
         private void SpawnMarker(Vector3 position)

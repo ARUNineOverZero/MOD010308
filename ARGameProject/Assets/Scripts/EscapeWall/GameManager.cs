@@ -28,6 +28,7 @@ namespace EscapeWall
         [SerializeField] private XROrigin _xrOrigin;
         public XROrigin XrOrigin => _xrOrigin;
         [SerializeField] private Camera _arCamera;
+        [SerializeField] private ARCameraInsideLock _arCameraInsideLock;
         public Camera ArCamera => _arCamera;
         [SerializeField] private ARPlaneManager _planeManager;
         public ARPlaneManager PlaneManager => _planeManager;
@@ -84,6 +85,8 @@ namespace EscapeWall
             foreach (var plane in _planeManager.trackables)
                 plane.gameObject.SetActive(visible);
         }
+
+        public void SetCameraLockPosition(Vector3 lockPosition) => _arCameraInsideLock.SetLockPosition(lockPosition);
     }
 
     public enum Side

@@ -81,6 +81,15 @@ namespace EscapeWall
             Debug.Log(locked ? "Screen Lock" : "Screen Unlock");
         }
 
+        public void SetLockPosition(Vector3 position)
+        {
+            _lockPosition = position;
+            SetLock(true);
+        }
+
+        [ContextMenu("Unlock")]
+        private void Unlock() => SetLock(false);
+
         private void OnDrawGizmosSelected()
         {
             if (arCamera == null) return;
