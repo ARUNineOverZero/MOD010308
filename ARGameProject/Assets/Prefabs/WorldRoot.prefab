@@ -1,5 +1,37 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &306238977640081526
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2618629527978899220}
+  m_Layer: 0
+  m_Name: Both
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2618629527978899220
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 306238977640081526}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1.0000138, y: 1.1875005, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8662994683671353710}
+  m_Father: {fileID: 579551675974728143}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &694962076999329543
 GameObject:
   m_ObjectHideFlags: 0
@@ -334,6 +366,108 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!1 &3776400598789717685
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8662994683671353710}
+  - component: {fileID: 6073996132270216552}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8662994683671353710
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3776400598789717685}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2618629527978899220}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6073996132270216552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3776400598789717685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 224802ddb55565a46897d027195f9aea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EscapeWall.CameraEnterTrigger
+  _camera: {fileID: 0}
+  _radius: 1
+  _useBox: 0
+  _boxSize: {x: 1, y: 1, z: 1}
+  OnEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 242441220937312468}
+        m_TargetAssemblyTypeName: EscapeWall.WallHatch, Assembly-CSharp
+        m_MethodName: PreventClose
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7244546793473068209}
+        m_TargetAssemblyTypeName: EscapeWall.WallHatch, Assembly-CSharp
+        m_MethodName: PreventClose
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnExit:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 242441220937312468}
+        m_TargetAssemblyTypeName: EscapeWall.WallHatch, Assembly-CSharp
+        m_MethodName: AllowClose
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7244546793473068209}
+        m_TargetAssemblyTypeName: EscapeWall.WallHatch, Assembly-CSharp
+        m_MethodName: AllowClose
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5119646245812776312
 GameObject:
   m_ObjectHideFlags: 0
@@ -366,6 +500,7 @@ Transform:
   m_Children:
   - {fileID: 6457319906778447792}
   - {fileID: 5330445533841674746}
+  - {fileID: 2618629527978899220}
   - {fileID: 1530808642132041107}
   - {fileID: 3355553616591142033}
   m_Father: {fileID: 0}
@@ -675,7 +810,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1411
+  m_VersionIndex: 1414
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -800,7 +935,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &3355553616591142033
 Transform:
   m_ObjectHideFlags: 0
@@ -869,6 +1004,18 @@ PrefabInstance:
     - target: {fileID: 4082715172045911440, guid: 0e20883af1f9db842b5d1e1fcbb64808, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4505150722999771439, guid: 0e20883af1f9db842b5d1e1fcbb64808, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4505150722999771439, guid: 0e20883af1f9db842b5d1e1fcbb64808, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4505150722999771439, guid: 0e20883af1f9db842b5d1e1fcbb64808, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 5224012813499721336, guid: 0e20883af1f9db842b5d1e1fcbb64808, type: 3}
       propertyPath: m_VersionIndex
@@ -1077,7 +1224,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1783905149763798900, guid: 7bbe311489d695248bda3e92771193fe, type: 3}
       propertyPath: m_VersionIndex
-      value: 5447
+      value: 5450
       objectReference: {fileID: 0}
     - target: {fileID: 1783905149763798900, guid: 7bbe311489d695248bda3e92771193fe, type: 3}
       propertyPath: m_SelectedEdges.Array.size
@@ -1097,7 +1244,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4178156380215980164, guid: 7bbe311489d695248bda3e92771193fe, type: 3}
       propertyPath: m_VersionIndex
-      value: 5463
+      value: 5466
       objectReference: {fileID: 0}
     - target: {fileID: 4300651978044426729, guid: 7bbe311489d695248bda3e92771193fe, type: 3}
       propertyPath: m_VersionIndex
@@ -1149,7 +1296,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6518379210142812573, guid: 7bbe311489d695248bda3e92771193fe, type: 3}
       propertyPath: m_VersionIndex
-      value: 5440
+      value: 5443
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1332,7 +1479,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 183093312466120293, guid: 38862b56ba0acee4387487494d89d575, type: 3}
       propertyPath: m_VersionIndex
-      value: 7245
+      value: 7248
       objectReference: {fileID: 0}
     - target: {fileID: 5934869289674863323, guid: 38862b56ba0acee4387487494d89d575, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1400,6 +1547,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hole
       objectReference: {fileID: 0}
+    - target: {fileID: 4505150722999771439, guid: 0e20883af1f9db842b5d1e1fcbb64808, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4505150722999771439, guid: 0e20883af1f9db842b5d1e1fcbb64808, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4505150722999771439, guid: 0e20883af1f9db842b5d1e1fcbb64808, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 90
+      objectReference: {fileID: 0}
     - target: {fileID: 6605513027062929581, guid: 0e20883af1f9db842b5d1e1fcbb64808, type: 3}
       propertyPath: OnOpen.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -1418,7 +1577,7 @@ PrefabInstance:
       objectReference: {fileID: 6663521801038732469}
     - target: {fileID: 7350851338238470446, guid: 0e20883af1f9db842b5d1e1fcbb64808, type: 3}
       propertyPath: m_VersionIndex
-      value: 1105
+      value: 1108
       objectReference: {fileID: 0}
     - target: {fileID: 7768353691109182396, guid: 0e20883af1f9db842b5d1e1fcbb64808, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1462,7 +1621,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9212780123073833450, guid: 0e20883af1f9db842b5d1e1fcbb64808, type: 3}
       propertyPath: m_VersionIndex
-      value: 2875
+      value: 2878
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

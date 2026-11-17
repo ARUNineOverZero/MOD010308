@@ -9,12 +9,14 @@ namespace EscapeWall
         [SerializeField] private Transform _hatch;
         [SerializeField] private float _speed = 1f;
         [SerializeField] private float _maxRotation = 90f;
+        private bool _allowClose = true; 
         private float _target;
 
         private bool _isOpen;
         private float _currentPosition;
         private Coroutine _openCloseCoroutine;
 
+        [Header("Events")]
         public UnityEvent OnOpen;
         public UnityEvent OnClose;
         public UnityEvent OnClosed;
@@ -28,7 +30,7 @@ namespace EscapeWall
         {
             if(_isOpen)
                 return;
-                
+
             _isOpen = true;
             _target = 1;
 
@@ -42,7 +44,9 @@ namespace EscapeWall
 
         public void Close()
         {
-             if(!_isOpen)
+            if(!_allowClose) return;
+
+            if(!_isOpen)
                 return;
 
             _isOpen = false;
@@ -90,6 +94,18 @@ namespace EscapeWall
             Vector3 euler = _hatch.localEulerAngles;
             euler.x = _currentPosition * _maxRotation;
             _hatch.localRotation = Quaternion.Euler(euler);
+        }
+
+        public void PreventClose()
+        {
+            _allowClose = false;
+            if(_currentPosition != 0)
+                Open();
+        }
+
+        public void AllowClose()
+        {
+            _allowClose = true;
         }
 
         public void Tap() => ToggleOpen();
