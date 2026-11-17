@@ -14,8 +14,11 @@ namespace EscapeWall
         [SerializeField] private Camera _arCamera;
         [SerializeField] private GameObject _worldRoot;
 
+
         [Header("Prefabs")]
         [SerializeField] private GameObject _pointMarkerPrefab;
+        [SerializeField] private Material _planeMaterial;
+
         private readonly List<ARRaycastHit> _hits = new();
         private readonly List<GameObject> _tempMarkers = new();
         private PlacementStage _stage = PlacementStage.NotSet;
@@ -117,24 +120,6 @@ namespace EscapeWall
             return false;
         }
 
-        private bool TryGetCurrentPointerHit(out Vector3 worldPosition)
-        {
-            worldPosition = default;
-
-            if (Pointer.current == null || _raycastManager == null)
-                return false;
-
-            Vector2 screenPosition = Pointer.current.position.ReadValue();
-
-            if (_raycastManager.Raycast(screenPosition, _hits, TrackableType.PlaneWithinPolygon))
-            {
-                worldPosition = _hits[0].pose.position;
-                return true;
-            }
-
-            return false;
-        }
-
         private void UpdateFirstPointStage()
         {
             if (TryGetRaycastHitPosition(out Vector3 hitPosition))
@@ -168,6 +153,8 @@ namespace EscapeWall
             {
                 _previewPlane = GameObject.CreatePrimitive(PrimitiveType.Plane);
                 _previewPlane.name = "AreaPreview";
+                var meshRenderer = _previewPlane.GetComponent<MeshRenderer>();
+                meshRenderer.sharedMaterial = _planeMaterial;
                 Destroy(_previewPlane.GetComponent<Collider>());
             }
 
@@ -177,10 +164,9 @@ namespace EscapeWall
 
             Color color = _area.IsTooSmall(MinSize) ? Color.red : Color.green;
             color.a = 0.45f;
-
-            var renderer = _previewPlane.GetComponent<MeshRenderer>();
-            if (renderer != null)
-                renderer.material.color = color;
+            
+            if (_planeMaterial != null)
+                _planeMaterial.color = color;
         }
 
         private void FinalizePlacement()
