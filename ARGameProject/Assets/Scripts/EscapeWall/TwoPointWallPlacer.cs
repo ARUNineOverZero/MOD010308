@@ -191,20 +191,29 @@ namespace EscapeWall
                 Destroy(_previewPlane.GetComponent<Collider>());
             }
 
-            float width = Mathf.Abs(pointA.x - pointB.x);
-            float length = Mathf.Abs(pointA.z - pointB.z);
+            Vector3 diagonal = pointA - pointB;
+            diagonal.y = 0f;
 
-            Vector3 center = new Vector3(
-                (pointA.x + pointB.x) * 0.5f,
-                _groundHeight + 0.01f,
-                (pointA.z + pointB.z) * 0.5f
-            );
+            float diagonalLength = diagonal.magnitude;
+            if (diagonalLength < 0.001f)
+                return;
+
+            float sideLength = diagonalLength / Mathf.Sqrt(2f);
+
+            Vector3 center = (pointA + pointB) * 0.5f;
+            center.y = _groundHeight + 0.01f;
+
+            Vector3 forwards = Quaternion.Euler(0f, 45f, 0f) * diagonal.normalized;
+            forwards.y = 0f;
+            forwards.Normalize();
+
+            Quaternion rotation = Quaternion.LookRotation(forwards, Vector3.up);
 
             _previewPlane.transform.position = center;
-            _previewPlane.transform.rotation = Quaternion.identity;
-            _previewPlane.transform.localScale = new Vector3(width / 10f, 1f, length / 10f);
+            _previewPlane.transform.rotation = rotation;
+            _previewPlane.transform.localScale = new Vector3(sideLength / 10f, 1f, sideLength / 10f);
 
-            bool tooSmall = width < MinSize || length < MinSize;
+            bool tooSmall = sideLength < MinSize;
             Color color = tooSmall ? Color.red : Color.green;
             color.a = 0.45f;
 
