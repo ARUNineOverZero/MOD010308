@@ -43,7 +43,7 @@ namespace EscapeWall
             if (_worldRoot != null)
                 _worldRoot.SetActive(false);
 
-            if(_pointMarkerPrefab != null && _pointMarkerPrefab.TryGetComponent(out MeshRenderer mr))
+            if (_pointMarkerPrefab != null && _pointMarkerPrefab.TryGetComponent(out MeshRenderer mr))
                 _arrowMaterial = mr.sharedMaterial;
 
             BeginPlacement();
@@ -180,8 +180,8 @@ namespace EscapeWall
             if (_planeMaterial != null)
                 _planeMaterial.color = color;
 
-            if(_arrowMaterial != null)
-                 _arrowMaterial.color = color;
+            if (_arrowMaterial != null)
+                _arrowMaterial.color = color;
         }
 
         private void FinalizePlacement()
@@ -199,7 +199,6 @@ namespace EscapeWall
             _worldRoot.transform.rotation = rotation;
 
             _worldRoot.SetActive(true);
-            //GameManager.Instance.SetCameraLockPosition(center + Vector3.up + Vector3.back * 1.5f);
         }
 
         private void SpawnMarker(Vector3 position)
