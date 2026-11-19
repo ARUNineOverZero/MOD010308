@@ -103,6 +103,9 @@ namespace EscapeWallEditor.Animation
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
+            if (property == null || property.serializedObject == null || property.serializedObject.targetObject == null)
+                return EditorGUIUtility.singleLineHeight;
+
             if (!property.isExpanded)
                 return EditorGUIUtility.singleLineHeight;
 

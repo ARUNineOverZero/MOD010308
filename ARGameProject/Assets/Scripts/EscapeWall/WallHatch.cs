@@ -23,6 +23,8 @@ namespace EscapeWall
         public UnityEvent OnClose;
         public UnityEvent OnClosed;
 
+        public InteractionState State => InteractionState.None;
+
         private void Start()
         {
             ApplyRotation();

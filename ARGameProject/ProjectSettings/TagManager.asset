@@ -15,7 +15,7 @@ TagManager:
   - PhysicsIgnore
   - PlayerOneOnly
   - PlayerTwoOnly
-  - 
+  - TriggerPhysics
   - 
   - 
   - 

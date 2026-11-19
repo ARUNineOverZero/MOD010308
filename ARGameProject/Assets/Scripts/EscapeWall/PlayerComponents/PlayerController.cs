@@ -12,6 +12,8 @@ namespace EscapeWall.PlayerComponents
 
         [Header("Interaction Settings")]
         [SerializeField] private float _interactionDistance = 5f;
+        [SerializeField] private LayerMask _layerMask;
+
 
         public void Awake()
         {
@@ -57,7 +59,7 @@ namespace EscapeWall.PlayerComponents
         private bool TryIteract(Vector3 screenPosition, out IInteractable interactable)
         {
             var ray = _camera.ScreenPointToRay(screenPosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, _interactionDistance))
+            if (Physics.Raycast(ray, out RaycastHit hit, _interactionDistance, _layerMask))
             {
                 interactable = hit.transform.GetComponentInParent<IInteractable>();
                 return interactable != null;

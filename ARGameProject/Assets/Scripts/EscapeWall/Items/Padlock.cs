@@ -31,6 +31,7 @@ namespace EscapeWall.Items
 
         public void UseKey(Key key)
         {
+            key.EndInteract();
             if (key.ID == _keyId)
                 PlayCorrectKey(key);
             else
@@ -40,8 +41,7 @@ namespace EscapeWall.Items
         {
             usingKey = true;
             Transform t = key.transform;
-            Rigidbody rb = key.Rigidbody;
-            rb.isKinematic = true;
+            key.DisableRigidBody();
             t.parent = _keyAnchor;
             t.localPosition = Vector3.zero;
             t.localRotation = Quaternion.identity;
@@ -49,7 +49,7 @@ namespace EscapeWall.Items
             StartCoroutine(_incorrectKey.Play(null, () =>
             {
                 t.parent = null;
-                rb.isKinematic = false;
+                key.EnableRigidbody();
                 StartCoroutine(RemoveKey());
             }));
         }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using EscapeWall.Items;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace EscapeWallEditor.Animation
@@ -26,6 +27,25 @@ namespace EscapeWallEditor.Animation
         {
             EditorApplication.playModeStateChanged += _ => StopAll();
             AssemblyReloadEvents.beforeAssemblyReload += StopAll;
+            EditorApplication.hierarchyChanged += OnHierarchyChanged;
+            EditorSceneManager.sceneClosing += (_, _) => StopAll();
+            EditorSceneManager.activeSceneChangedInEditMode += (_, _) => StopAll();
+        }
+
+        private static void OnHierarchyChanged()
+        {
+            // Cheap validity sweep
+            var toRemove = new List<string>();
+            foreach (var pair in States)
+            {
+                if (pair.Value?.transform == null)
+                    toRemove.Add(pair.Key);
+            }
+            foreach (var path in toRemove)
+                States.Remove(path);
+
+            if (States.Count == 0)
+                Unhook();
         }
 
         public static bool IsPlaying(string path)
@@ -87,13 +107,15 @@ namespace EscapeWallEditor.Animation
             }
 
             var toRemove = new List<string>();
+            float delta = (float)EditorApplication.timeSinceStartup; // more reliable in editor than Time.deltaTime
 
             foreach (var pair in States)
             {
                 var path = pair.Key;
                 var s = pair.Value;
 
-                if (s?.transform == null)
+                // Unity's overloaded == null
+                if (s == null || s.transform == null || s.keys == null || s.keys.Length < 2)
                 {
                     toRemove.Add(path);
                     continue;
@@ -103,7 +125,7 @@ namespace EscapeWallEditor.Animation
                 var to = s.reversing ? s.keys[s.segment] : s.keys[s.segment + 1];
 
                 float duration = Mathf.Max(0.01f, to.duration);
-                s.elapsed += Time.deltaTime;
+                s.elapsed += delta * 0.016f; // rough frame-rate independent step; adjust if needed
 
                 float t = Mathf.Clamp01(s.elapsed / duration);
                 t = Mathf.SmoothStep(0f, 1f, t);

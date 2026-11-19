@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using EscapeWall.PlayerComponents.Interaction;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,20 +14,21 @@ namespace EscapeWall
         public UnityEvent OnEnter;
         public UnityEvent OnExit;
 
+        private readonly HashSet<IInteractable> _interactables = new();
+        private bool _playerInside;
         private bool _wasInside;
 
         private void Start()
         {
-            if (_playerTransform == null)
+            if (_playerTransform == null && GameManager.Instance != null)
                 _playerTransform = GameManager.Instance.Player.transform;
         }
 
         private void Update()
         {
-            if (_playerTransform == null)
-                return;
-
-            bool isInside = IsInsideBox(_playerTransform.position);
+            // Fallback box check for the player (in case trigger doesn't catch them)
+            bool playerInBox = IsInsideBox(_playerTransform);
+            bool isInside = playerInBox || _playerInside || _interactables.Count > 0;
 
             if (isInside && !_wasInside)
                 OnEnter?.Invoke();
@@ -36,9 +39,11 @@ namespace EscapeWall
             _wasInside = isInside;
         }
 
-        private bool IsInsideBox(Vector3 position)
+        private bool IsInsideBox(Transform target)
         {
-            Vector3 local = transform.InverseTransformPoint(position);
+            if (target == null) return false;
+
+            Vector3 local = transform.InverseTransformPoint(target.position);
             Vector3 half = _boxSize * 0.5f;
 
             return Mathf.Abs(local.x) <= half.x &&
@@ -51,6 +56,42 @@ namespace EscapeWall
             Gizmos.color = Color.yellow;
             Gizmos.matrix = transform.localToWorldMatrix;
             Gizmos.DrawWireCube(Vector3.zero, _boxSize);
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            // Player entered via trigger
+            if (IsPlayer(other.transform))
+            {
+                _playerInside = true;
+                return;
+            }
+
+            // Interactable item entered
+            var interactable = other.GetComponentInParent<IInteractable>();
+            if (interactable != null)
+                _interactables.Add(interactable);
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            // Player exited via trigger
+            if (IsPlayer(other.transform))
+            {
+                _playerInside = false;
+                return;
+            }
+
+            // Interactable item exited
+            var interactable = other.GetComponentInParent<IInteractable>();
+            if (interactable != null)
+                _interactables.Remove(interactable);
+        }
+
+        private bool IsPlayer(Transform t)
+        {
+            if (t == null || _playerTransform == null) return false;
+            return t == _playerTransform || t.IsChildOf(_playerTransform);
         }
     }
 }
