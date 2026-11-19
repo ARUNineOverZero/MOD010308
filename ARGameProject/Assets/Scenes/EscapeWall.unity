@@ -156,7 +156,7 @@ MonoBehaviour:
   _raycastManager: {fileID: 923425325}
   _anchorManager: {fileID: 923425324}
   _trackedImageManager: {fileID: 923425327}
-  _interactionManager: {fileID: 1813481513}
+  _interactionManager: {fileID: 0}
   _worldRoot: {fileID: 1914346661}
   isCheckingSideOfWall: 1
   onSideOfWallChanged:
@@ -1775,54 +1775,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!1 &1280493850
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1280493851}
-  - component: {fileID: 1280493853}
-  m_Layer: 0
-  m_Name: WallPlacer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1280493851
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1280493850}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1280493853
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1280493850}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f31ea4a836f7ab54bb90825d67f1a9fa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EscapeWall.TwoPointWallPlacer
-  _arCamera: {fileID: 1813481511}
-  _worldRoot: {fileID: 1914346661}
-  _pointMarkerPrefab: {fileID: 2881610099111179275, guid: 1b6417212b6379b4592ee76f8a1b6926, type: 3}
-  _planeMaterial: {fileID: 2100000, guid: 46f544290b82f4949ae4ea0391b21f9f, type: 2}
 --- !u!1 &1300297427
 GameObject:
   m_ObjectHideFlags: 0
@@ -3485,12 +3437,12 @@ GameObject:
   - component: {fileID: 1813481508}
   - component: {fileID: 1813481507}
   - component: {fileID: 1813481512}
-  - component: {fileID: 1813481513}
   - component: {fileID: 1813481514}
   - component: {fileID: 1813481517}
   - component: {fileID: 1813481516}
   - component: {fileID: 1813481515}
   - component: {fileID: 1813481518}
+  - component: {fileID: 1813481519}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3750,19 +3702,6 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!114 &1813481513
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1813481505}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8119e00b4c399847a102067ff1b4cef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EscapeWall.InteractionManager
-  interactionDistance: 5
 --- !u!114 &1813481514
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3797,6 +3736,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efdca45ff829ff44d8e59fd89c0a536c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EscapeWall.PlayerComponents.PlayerController
+  _inputHandler: {fileID: 0}
+  _camera: {fileID: 0}
+  _interactionManager: {fileID: 0}
+  _interactionDistance: 5
 --- !u!114 &1813481516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3824,6 +3767,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EscapeWall.Player
   _inputHandler: {fileID: 1813481516}
   _wallPlacerController: {fileID: 1813481518}
+  _interactionManager: {fileID: 1813481519}
   _controller: {fileID: 1813481515}
   _camera: {fileID: 1813481511}
 --- !u!114 &1813481518
@@ -3838,13 +3782,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 319052d573a79104aa4d3e2775b71fe9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EscapeWall.WallPlacer.WallPlacerController
-  _raycastManager: {fileID: 0}
+  _raycastManager: {fileID: 923425325}
   _player: {fileID: 1813481517}
   _arCamera: {fileID: 1813481511}
   _worldRoot: {fileID: 1914346661}
   _inputHandler: {fileID: 1813481516}
   _pointMarkerPrefab: {fileID: 2881610099111179275, guid: 1b6417212b6379b4592ee76f8a1b6926, type: 3}
   _planeMaterial: {fileID: 2100000, guid: 46f544290b82f4949ae4ea0391b21f9f, type: 2}
+--- !u!114 &1813481519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1813481505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dfc0c53a45ea3d47a9aada75e4ae3c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EscapeWall.PlayerComponents.Interaction.InteractionManager
 --- !u!43 &1892603128
 Mesh:
   m_ObjectHideFlags: 0
@@ -4394,6 +4350,5 @@ SceneRoots:
   - {fileID: 1115666730}
   - {fileID: 923425323}
   - {fileID: 99005344}
-  - {fileID: 1280493851}
   - {fileID: 1719672080}
   - {fileID: 1324475017}

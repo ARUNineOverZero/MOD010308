@@ -1,6 +1,7 @@
 using System;
 using EscapeWall.PlayerComponents;
 using EscapeWall.PlayerComponents.EWInput;
+using EscapeWall.PlayerComponents.Interaction;
 using EscapeWall.WallPlacer;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -17,6 +18,8 @@ namespace EscapeWall
         public PlayerInputHandler InputHandler => _inputHandler;
         [SerializeField] private WallPlacerController _wallPlacerController;
         public WallPlacerController WallPlacerController => _wallPlacerController;
+        [SerializeField] private InteractionManager _interactionManager;
+        public InteractionManager InteractionManager => _interactionManager;
         [SerializeField] private PlayerController _controller;
         public PlayerController Controller => _controller;
         [SerializeField] private Camera _camera;

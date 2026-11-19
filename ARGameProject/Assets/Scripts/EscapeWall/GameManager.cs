@@ -1,3 +1,4 @@
+using EscapeWall.PlayerComponents.Interaction;
 using Unity.VisualScripting;
 using Unity.XR.CoreUtils;
 using UnityEngine;
@@ -40,9 +41,6 @@ namespace EscapeWall
 
         [SerializeField] private ARTrackedImageManager _trackedImageManager;
         public ARTrackedImageManager TrackedImageManager => _trackedImageManager;
-
-        [SerializeField] private InteractionManager _interactionManager;
-        public InteractionManager InteractionManager => _interactionManager;
 
         [SerializeField] private GameObject _worldRoot;
         public GameObject WorldRoot => _worldRoot;

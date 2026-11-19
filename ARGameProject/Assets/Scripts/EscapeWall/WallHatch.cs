@@ -1,14 +1,16 @@
 using System.Collections;
+using EscapeWall.PlayerComponents.Interaction;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace EscapeWall
 {
-    public class WallHatch : MonoBehaviour, ITapable
+    public class WallHatch : MonoBehaviour, IInteractable
     {
         [SerializeField] private Transform _hatch;
         [SerializeField] private float _speed = 1f;
         [SerializeField] private float _maxRotation = 90f;
+        private bool _allowOpen = false; 
         private bool _allowClose = true; 
         private float _target;
 
@@ -28,7 +30,7 @@ namespace EscapeWall
 
         public void Open()
         {
-            if(_isOpen)
+            if(!_allowOpen || _isOpen)
                 return;
 
             _isOpen = true;
@@ -70,8 +72,6 @@ namespace EscapeWall
 
         private IEnumerator OpenCloseHatch()
         {
-            float originalTarget = _target;
-
             while (!Mathf.Approximately(_currentPosition, _target))
             {
                 _currentPosition = Mathf.MoveTowards(_currentPosition, _target, _speed * Time.deltaTime);
@@ -108,6 +108,11 @@ namespace EscapeWall
             _allowClose = true;
         }
 
-        public void Tap() => ToggleOpen();
+        public void BeginInteract() => ToggleOpen();
+
+        public void EndInteract()
+        {
+            
+        }
     }
 }
