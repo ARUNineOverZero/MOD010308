@@ -1,5 +1,8 @@
+using System;
 using EscapeWall.PlayerComponents;
 using EscapeWall.PlayerComponents.EWInput;
+using EscapeWall.WallPlacer;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace EscapeWall
@@ -12,7 +15,30 @@ namespace EscapeWall
         public InputSystem InputSystem => _inputSystem;
         [SerializeField] private PlayerInputHandler _inputHandler;
         public PlayerInputHandler InputHandler => _inputHandler;
+        [SerializeField] private WallPlacerController _wallPlacerController;
+        public WallPlacerController WallPlacerController => _wallPlacerController;
         [SerializeField] private PlayerController _controller;
         public PlayerController Controller => _controller;
+        [SerializeField] private Camera _camera;
+        public Camera Camera => _camera;
+
+        public void Initialize()
+        {
+            _inputSystem = new InputSystem();
+            _inputSystem.Enable();
+        }
+
+        public void EnterWallPlacementControllerMode()
+        {
+            _wallPlacerController.enabled = true;
+            _controller.enabled = false;
+            _wallPlacerController.BeginPlacement();
+        }
+
+        public void EnterPlayerControllerMode()
+        {
+            _wallPlacerController.enabled = false;
+            _controller.enabled = true;
+        }
     }
 }

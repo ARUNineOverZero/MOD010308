@@ -13,7 +13,7 @@ namespace EscapeWallDebug
         private void Awake()
         {
             if (_camera == null)
-                _camera = GameManager.Instance.ArCamera;
+                _camera = GameManager.Instance.Player.Camera;
         }
 
         public void Update()

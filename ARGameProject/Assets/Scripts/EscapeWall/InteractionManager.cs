@@ -9,7 +9,7 @@ namespace EscapeWall
         public float interactionDistance = 5f;
         private void Awake()
         {
-            _arCamera = GameManager.Instance.ArCamera;
+            _arCamera = GameManager.Instance.Player.Camera;
         }
 
         private void Update()

@@ -5,7 +5,7 @@ namespace EscapeWall
 {
     public class CameraEnterTrigger : MonoBehaviour
     {
-        [SerializeField] private Transform _camera;
+        [SerializeField] private Transform _playerTransform;
         [SerializeField] private Vector3 _boxSize = Vector3.one;
 
         [Header("Events")]
@@ -16,16 +16,16 @@ namespace EscapeWall
 
         private void Start()
         {
-            if (_camera == null)
-                _camera = GameManager.Instance.ArCamera.transform;
+            if (_playerTransform == null)
+                _playerTransform = GameManager.Instance.Player.transform;
         }
 
         private void Update()
         {
-            if (_camera == null)
+            if (_playerTransform == null)
                 return;
 
-            bool isInside = IsInsideBox(_camera.position);
+            bool isInside = IsInsideBox(_playerTransform.position);
 
             if (isInside && !_wasInside)
                 OnEnter?.Invoke();

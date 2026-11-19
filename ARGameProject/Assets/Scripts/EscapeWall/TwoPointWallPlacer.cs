@@ -38,7 +38,7 @@ namespace EscapeWall
                 _raycastManager = GameManager.Instance.RaycastManager;
 
             if (_arCamera == null)
-                _arCamera = GameManager.Instance.ArCamera;
+                _arCamera = GameManager.Instance.Player.Camera;
 
             if (_worldRoot != null)
                 _worldRoot.SetActive(false);

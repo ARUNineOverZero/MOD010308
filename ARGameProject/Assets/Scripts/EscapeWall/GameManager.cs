@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.Events;
@@ -27,9 +28,9 @@ namespace EscapeWall
         public ARSession ArSession => _arSession;
         [SerializeField] private XROrigin _xrOrigin;
         public XROrigin XrOrigin => _xrOrigin;
-        [SerializeField] private Camera _arCamera;
+        [SerializeField] private Player _player;
+        public Player Player => _player;
         [SerializeField] private ARCameraInsideLock _arCameraInsideLock;
-        public Camera ArCamera => _arCamera;
         [SerializeField] private ARPlaneManager _planeManager;
         public ARPlaneManager PlaneManager => _planeManager;
         [SerializeField] private ARRaycastManager _raycastManager;
@@ -50,14 +51,19 @@ namespace EscapeWall
         public Side CameraSideOfWall => _cameraSideOfWall;
         public UnityEvent<string> onSideOfWallChanged;
 
-        private void Awake() => StartInstance(this);
+        private void Awake()
+        {
+            StartInstance(this);
+            _player.Initialize();
+            _player.EnterWallPlacementControllerMode();
+        }
 
         public void Update() => CheckSideOfWall();
 
         private void CheckSideOfWall()
         {
             if (!isCheckingSideOfWall) return;
-            var side = GetSideOfTheWall(_arCamera.transform.position);
+            var side = GetSideOfTheWall(_player.transform.position);
 
             if (side == _cameraSideOfWall) return;
 

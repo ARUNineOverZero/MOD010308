@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
@@ -11,6 +12,11 @@ namespace EscapeWall.PlayerComponents
     {
         [Header("UI Filtering")]
         [SerializeField] private bool _ignoreTouchesOverUI = true;
+
+#if UNITY_EDITOR
+        private const int MouseFingerId = 1;
+        private bool _mouseWasDown;
+#endif
 
         public struct FingerData
         {
@@ -53,6 +59,64 @@ namespace EscapeWall.PlayerComponents
             Touch.onFingerMove -= HandleFingerMove;
         }
 
+#if UNITY_EDITOR
+
+        private void Update()
+        {
+            HandleMouse();
+        }
+
+
+        private void HandleMouse()
+        {
+            if (Mouse.current == null) return;
+
+            bool isDown = Mouse.current.leftButton.isPressed;
+            Vector2 position = Mouse.current.position.ReadValue();
+
+            if (isDown && !_mouseWasDown)
+            {
+                bool overUI = IsPointerOverUI(MouseFingerId, position);
+                if (overUI && _ignoreTouchesOverUI)
+                {
+                    _mouseWasDown = true;
+                    return;
+                }
+
+                FingerData data = new FingerData
+                {
+                    fingerId = MouseFingerId,
+                    position = position,
+                    isOverUI = overUI
+                };
+
+                _activeFingers[MouseFingerId] = data;
+                OnFingerDown?.Invoke(data);
+            }
+            else if (!isDown && _mouseWasDown)
+            {
+                if (_activeFingers.TryGetValue(MouseFingerId, out FingerData data))
+                {
+                    data.position = position;
+                    _activeFingers.Remove(MouseFingerId);
+                    OnFingerUp?.Invoke(data);
+                }
+            }
+            else if (isDown && _activeFingers.ContainsKey(MouseFingerId))
+            {
+                FingerData data = _activeFingers[MouseFingerId];
+                if (data.position != position)
+                {
+                    data.position = position;
+                    _activeFingers[MouseFingerId] = data;
+                    OnFingerMove?.Invoke(data);
+                }
+            }
+
+            _mouseWasDown = isDown;
+        }
+#endif
+
         private void HandleFingerDown(Finger finger)
         {
             Touch touch = finger.currentTouch;
@@ -86,7 +150,7 @@ namespace EscapeWall.PlayerComponents
         private void HandleFingerMove(Finger finger)
         {
             Touch touch = finger.currentTouch;
-            if (!_activeFingers.TryGetValue(touch.touchId, out var data)) return;
+            if (!_activeFingers.TryGetValue(touch.touchId, out FingerData data)) return;
 
             data.position = touch.screenPosition;
             _activeFingers[touch.touchId] = data;

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
@@ -9,7 +10,8 @@ namespace EscapeWall.WallPlacer
     public class WallPlacerController : MonoBehaviour
     {
         private SquareArea _area;
-        private ARRaycastManager _raycastManager;
+        [SerializeField] private ARRaycastManager _raycastManager;
+        [SerializeField] private Player _player;
         [SerializeField] private Camera _arCamera;
         [SerializeField] private GameObject _worldRoot;
         [SerializeField] private PlayerInputHandler _inputHandler;
@@ -23,6 +25,7 @@ namespace EscapeWall.WallPlacer
         private PlacementStage _stage = PlacementStage.NotSet;
         private GameObject _previewPlane;
         private const float MinSize = 3f;
+        private Coroutine _previewUpdateRoutine;
 
         private enum PlacementStage
         {
@@ -37,8 +40,14 @@ namespace EscapeWall.WallPlacer
             if (_raycastManager == null)
                 _raycastManager = GameManager.Instance.RaycastManager;
 
+            if (_player == null)
+                _player = GameManager.Instance.Player;
+
             if (_arCamera == null)
-                _arCamera = GameManager.Instance.ArCamera;
+                _arCamera = _player.Camera;
+
+            if (_inputHandler == null)
+                _inputHandler = _player.InputHandler;
 
             if (_worldRoot != null)
                 _worldRoot.SetActive(false);
@@ -50,17 +59,24 @@ namespace EscapeWall.WallPlacer
         private void OnEnable()
         {
             if (_inputHandler == null) return;
-
-            _inputHandler.OnFingerDown += HandleFingerDown;
-            _inputHandler.OnFingerMove += HandleFingerMove;
+            RegisterActions();
         }
 
         private void OnDisable()
         {
             if (_inputHandler == null) return;
+            DeregisterActions();
+            StopPreviewUpdate();
+        }
 
+        private void RegisterActions()
+        {
+            _inputHandler.OnFingerDown += HandleFingerDown;
+        }
+
+        private void DeregisterActions()
+        {
             _inputHandler.OnFingerDown -= HandleFingerDown;
-            _inputHandler.OnFingerMove -= HandleFingerMove;
         }
 
         public void BeginPlacement()
@@ -79,6 +95,7 @@ namespace EscapeWall.WallPlacer
 
         public void CancelPlacement()
         {
+            StopPreviewUpdate();
             _stage = PlacementStage.NotSet;
             ClearMarkers();
             DestroyPreview();
@@ -93,23 +110,50 @@ namespace EscapeWall.WallPlacer
                     _area.pointA = hitPosition;
                     SpawnMarker(_area.pointA);
                     _stage = PlacementStage.GetSecondPoint;
-                    SpawnMarker(_area.pointA);
+                    SpawnMarker(_area.pointA); 
                     GameManager.Instance.SetPlaneVisibility(false);
+
+                    StartPreviewUpdate();
                 }
             }
             else if (_stage == PlacementStage.GetSecondPoint)
             {
-                UpdatePreviewPlane();
+                UpdatePreviewFromCamera();
                 _stage = PlacementStage.StageSet;
+                StopPreviewUpdate();
                 FinalizePlacement();
             }
         }
 
-        private void HandleFingerMove(PlayerInputHandler.FingerData finger)
+        private void StartPreviewUpdate()
         {
-            if (_stage != PlacementStage.GetSecondPoint) return;
+            StopPreviewUpdate();
+            _previewUpdateRoutine = StartCoroutine(PreviewUpdateRoutine());
+        }
 
-            var cameraPosition = _arCamera.transform.position;
+        private void StopPreviewUpdate()
+        {
+            if (_previewUpdateRoutine != null)
+            {
+                StopCoroutine(_previewUpdateRoutine);
+                _previewUpdateRoutine = null;
+            }
+        }
+
+        private IEnumerator PreviewUpdateRoutine()
+        {
+            while (_stage == PlacementStage.GetSecondPoint)
+            {
+                UpdatePreviewFromCamera();
+                yield return null;
+            }
+        }
+
+        private void UpdatePreviewFromCamera()
+        {
+            if (_arCamera == null || !_area.IsValid) return;
+
+            Vector3 cameraPosition = _arCamera.transform.position;
             cameraPosition.y = _area.pointA.y;
             _area.pointB = cameraPosition;
 
@@ -188,6 +232,7 @@ namespace EscapeWall.WallPlacer
 
             _worldRoot.SetActive(true);
             _stage = PlacementStage.NotSet;
+            _player.EnterPlayerControllerMode();
         }
 
         private void SpawnMarker(Vector3 position)
