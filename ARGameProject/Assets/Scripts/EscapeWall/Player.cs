@@ -1,7 +1,8 @@
+using EscapeWall.PlayerComponents;
 using EscapeWall.PlayerComponents.EWInput;
 using UnityEngine;
 
-namespace EscapeWall.PlayerComponents
+namespace EscapeWall
 {
     [RequireComponent(typeof(PlayerInputHandler))]
     [RequireComponent(typeof(PlayerController))]
