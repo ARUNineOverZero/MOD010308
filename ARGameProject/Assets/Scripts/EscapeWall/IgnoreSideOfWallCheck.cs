@@ -7,13 +7,13 @@ namespace EscapeWall
 
         public void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.TryGetComponent<MobileDevice>(out var device))
+            if (other.gameObject.TryGetComponent<Player>(out var device))
                 GameManager.Instance.isCheckingSideOfWall = false;
         }
 
         public void OnTriggerExit(Collider other)
         {
-            if (other.gameObject.TryGetComponent<MobileDevice>(out var device))
+            if (other.gameObject.TryGetComponent<Player>(out var device))
             {
                 var side = GetSide(device.transform.position);
 
