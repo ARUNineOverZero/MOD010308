@@ -23,12 +23,21 @@ namespace EscapeWall.Items
             }
         }
 
+        public Transform target;
+
         public List<KeyPoint> keys = new();
         public bool loop;
         public bool pingPong;
 
-        public IEnumerator Play(Transform target,  Action callback = null)
+        public IEnumerator Play(Transform target = null, Action callback = null)
         {
+            if(target == null)
+            {
+                target = this.target;
+                if(target == null)
+                    yield break;
+            }
+
             if (keys == null || keys.Count < 2)
                 yield break;
 
@@ -55,7 +64,7 @@ namespace EscapeWall.Items
             while (elapsed < duration)
             {
                 float t = elapsed / duration;
-                t = Mathf.SmoothStep(0f, 1f, t);
+                t = Mathf.Lerp(0f, 1f, t);
 
                 target.localPosition = Vector3.Lerp(from.localPosition, to.localPosition, t);
                 target.localRotation = Quaternion.Slerp(from.localRotation, to.localRotation, t);

@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace EscapeWallEditor.Animation
 {
+    [InitializeOnLoad]
     public static class TransformAnimationPreview
     {
         private class State
@@ -21,10 +22,22 @@ namespace EscapeWallEditor.Animation
         private static readonly Dictionary<string, State> States = new();
         private static bool Hooked;
 
-        public static bool IsPlaying(string path) => States.ContainsKey(path);
+        static TransformAnimationPreview()
+        {
+            EditorApplication.playModeStateChanged += _ => StopAll();
+            AssemblyReloadEvents.beforeAssemblyReload += StopAll;
+        }
+
+        public static bool IsPlaying(string path)
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+                return false;
+            return States.ContainsKey(path);
+        }
 
         public static void Play(string path, Transform transform, TransformAnimation.KeyPoint[] keys, bool loop, bool pingPong)
         {
+            if (EditorApplication.isPlayingOrWillChangePlaymode) return;
             if (keys == null || keys.Length < 2 || transform == null) return;
 
             States[path] = new State
@@ -48,16 +61,30 @@ namespace EscapeWallEditor.Animation
         public static void Stop(string path)
         {
             States.Remove(path);
-            if (States.Count == 0 && Hooked)
-            {
-                EditorApplication.update -= Tick;
-                Hooked = false;
-            }
+            if (States.Count == 0)
+                Unhook();
+        }
+
+        public static void StopAll()
+        {
+            States.Clear();
+            Unhook();
+        }
+
+        private static void Unhook()
+        {
+            if (!Hooked) return;
+            EditorApplication.update -= Tick;
+            Hooked = false;
         }
 
         private static void Tick()
         {
-            if (States.Count == 0) return;
+            if (EditorApplication.isPlayingOrWillChangePlaymode || States.Count == 0)
+            {
+                StopAll();
+                return;
+            }
 
             var toRemove = new List<string>();
 
@@ -66,7 +93,7 @@ namespace EscapeWallEditor.Animation
                 var path = pair.Key;
                 var s = pair.Value;
 
-                if (s.transform == null)
+                if (s?.transform == null)
                 {
                     toRemove.Add(path);
                     continue;
@@ -96,7 +123,7 @@ namespace EscapeWallEditor.Animation
                             if (s.pingPong)
                             {
                                 s.reversing = true;
-                                s.segment = s.keys.Length - 2;
+                                s.segment = Mathf.Max(0, s.keys.Length - 2);
                             }
                             else if (s.loop)
                             {
@@ -130,11 +157,8 @@ namespace EscapeWallEditor.Animation
             foreach (var path in toRemove)
                 States.Remove(path);
 
-            if (States.Count == 0 && Hooked)
-            {
-                EditorApplication.update -= Tick;
-                Hooked = false;
-            }
+            if (States.Count == 0)
+                Unhook();
 
             if (SceneView.lastActiveSceneView != null)
                 SceneView.lastActiveSceneView.Repaint();

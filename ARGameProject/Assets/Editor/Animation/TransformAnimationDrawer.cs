@@ -12,6 +12,11 @@ namespace EscapeWallEditor.Animation
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
+            if (property == null || property.serializedObject == null || property.serializedObject.targetObject == null)
+                return;
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+                return;
+
             EditorGUI.BeginProperty(position, label, property);
 
             property.isExpanded = EditorGUI.Foldout(
@@ -23,6 +28,10 @@ namespace EscapeWallEditor.Animation
                 EditorGUI.indentLevel++;
 
                 float y = position.y + EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+
+                SerializedProperty targetProp = property.FindPropertyRelative("target");
+                EditorGUI.PropertyField(new Rect(position.x, y, position.width, EditorGUIUtility.singleLineHeight), targetProp);
+                y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
                 SerializedProperty keysProp = property.FindPropertyRelative("keys");
                 float keysHeight = EditorGUI.GetPropertyHeight(keysProp, true);
@@ -99,6 +108,7 @@ namespace EscapeWallEditor.Animation
 
             SerializedProperty keysProp = property.FindPropertyRelative("keys");
             float height = EditorGUIUtility.singleLineHeight;
+            height += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
             height += EditorGUI.GetPropertyHeight(keysProp, true) + EditorGUIUtility.standardVerticalSpacing;
             height += EditorGUIUtility.singleLineHeight * 2 + EditorGUIUtility.standardVerticalSpacing * 2;
             height += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
@@ -138,13 +148,27 @@ namespace EscapeWallEditor.Animation
             ApplyKeyToTransform(property, index);
         }
 
+        private Transform GetTargetTransform(SerializedProperty property)
+        {
+            SerializedProperty targetProp = property.FindPropertyRelative("target");
+            if (targetProp.objectReferenceValue is Transform t)
+                return t;
+
+            Object owner = property.serializedObject.targetObject;
+            if (owner is Component component)
+                return component.transform;
+            if (owner is GameObject go)
+                return go.transform;
+
+            return null;
+        }
+
         private void ApplyKeyToTransform(SerializedProperty property, int index)
         {
             SerializedProperty keysProp = property.FindPropertyRelative("keys");
             if (index < 0 || index >= keysProp.arraySize) return;
 
-            Object target = property.serializedObject.targetObject;
-            Transform transform = GetTransform(target);
+            Transform transform = GetTargetTransform(property);
             if (transform == null) return;
 
             SerializedProperty key = keysProp.GetArrayElementAtIndex(index);
@@ -158,12 +182,11 @@ namespace EscapeWallEditor.Animation
 
         private void AddCurrentKey(SerializedProperty property)
         {
-            Object target = property.serializedObject.targetObject;
-            Transform transform = GetTransform(target);
+            Transform transform = GetTargetTransform(property);
 
             if (transform == null)
             {
-                Debug.LogWarning("Could not find Transform on target.");
+                Debug.LogWarning("No target Transform assigned.");
                 return;
             }
 
@@ -205,8 +228,7 @@ namespace EscapeWallEditor.Animation
             SerializedProperty keysProp = property.FindPropertyRelative("keys");
             if (keysProp.arraySize < 2) return;
 
-            Object target = property.serializedObject.targetObject;
-            Transform transform = GetTransform(target);
+            Transform transform = GetTargetTransform(property);
             if (transform == null) return;
 
             var keys = new TransformAnimation.KeyPoint[keysProp.arraySize];
@@ -228,15 +250,6 @@ namespace EscapeWallEditor.Animation
                 property.FindPropertyRelative("loop").boolValue,
                 property.FindPropertyRelative("pingPong").boolValue
             );
-        }
-
-        private Transform GetTransform(Object target)
-        {
-            if (target is Component component)
-                return component.transform;
-            if (target is GameObject go)
-                return go.transform;
-            return null;
         }
     }
 }

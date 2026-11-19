@@ -70,6 +70,11 @@ namespace EscapeWall
                 Open();
         }
 
+        public void Unlock()
+        {
+            _allowOpen = true;
+        }
+
         private IEnumerator OpenCloseHatch()
         {
             while (!Mathf.Approximately(_currentPosition, _target))

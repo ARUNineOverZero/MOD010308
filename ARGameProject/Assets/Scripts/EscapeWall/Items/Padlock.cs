@@ -1,69 +1,87 @@
-using System;
+using System.Collections;
 using EscapeWall.PlayerComponents.Interaction;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace EscapeWall.Items
 {
-    public class Padlock : MonoBehaviour, IInteractable
+    public class Padlock : MonoBehaviour
     {
-        [SerializeField] private PadlockLoop _padlockLoop;
-        private bool _isLocked = true;
+        [SerializeField] private int _keyId = -1;
 
-        public void BeginInteract()
+        [SerializeField] private Transform _keyAnchor;
+
+        [SerializeField] private TransformAnimation _incorrectKey;
+        [SerializeField] private TransformAnimation _correctKey;
+        [SerializeField] private TransformAnimation _baseUnlock;
+        private bool usingKey = false;
+
+        public UnityEvent OnUnlocked;
+
+        private void OnTriggerEnter(Collider other)
         {
-            PlayUnlock();
+            if (usingKey) return;
+
+            Key key = other.gameObject.GetComponentInParent<Key>();
+
+            if (key == null) return;
+
+            UseKey(key);
         }
 
-        public void EndInteract()
+        public void UseKey(Key key)
         {
-            Drop();
+            if (key.ID == _keyId)
+                PlayCorrectKey(key);
+            else
+                PlayIncorrectKey(key);
+        }
+        private void PlayIncorrectKey(Key key)
+        {
+            usingKey = true;
+            Transform t = key.transform;
+            Rigidbody rb = key.Rigidbody;
+            rb.isKinematic = true;
+            t.parent = _keyAnchor;
+            t.localPosition = Vector3.zero;
+            t.localRotation = Quaternion.identity;
+
+            StartCoroutine(_incorrectKey.Play(null, () =>
+            {
+                t.parent = null;
+                rb.isKinematic = false;
+                StartCoroutine(RemoveKey());
+            }));
         }
 
-        public void UseKey(Transform key)
+        private IEnumerator RemoveKey()
         {
-            
-
-        }
-        private void PlayIncorrectKey(Transform key)
-        {
-            
+            yield return new WaitForSeconds(5);
+            usingKey = false;
         }
 
-        private void PlayCorrectKey(Transform key)
+        private void PlayCorrectKey(Key key)
         {
-            
+            usingKey = true;
+            Transform t = key.transform;
+            Destroy(key.Rigidbody);
+            t.parent = _keyAnchor;
+            t.localPosition = Vector3.zero;
+            t.localRotation = Quaternion.identity;
+
+            StartCoroutine(_correctKey.Play(null, PlayUnlock));
         }
 
         private void PlayUnlock()
         {
-            _padlockLoop.Play();
+            StartCoroutine(_baseUnlock.Play(null, Drop));
         }
 
         private void Drop()
         {
-            _padlockLoop.Stop();
-        }
-    }
-
-    public class PadlockLoop : MonoBehaviour
-    {
-        [SerializeField] public Padlock _Padlock; 
-        public TransformAnimation animation;
-
-        private Coroutine _playCoroutine;
-
-        public void Play(Action callback = null)
-        {
-            if(_playCoroutine != null) return;
-
-            _playCoroutine = StartCoroutine(animation.Play(transform, () => Stop(callback)));
-        }
-
-        public void Stop(Action callback = null)
-        {
-            StopCoroutine(_playCoroutine);
-            _playCoroutine = null;
-            callback?.Invoke();
+            GetComponent<Rigidbody>().isKinematic = false;
+            OnUnlocked?.Invoke();
+            Destroy(this);
         }
     }
 }
