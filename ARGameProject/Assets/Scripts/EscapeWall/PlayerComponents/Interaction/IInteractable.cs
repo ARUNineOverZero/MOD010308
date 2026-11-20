@@ -1,6 +1,6 @@
 namespace EscapeWall.PlayerComponents.Interaction
 {
-    public interface IInteractable
+    public interface IInteractable 
     {
         public InteractionState State {get;}
         void BeginInteract();

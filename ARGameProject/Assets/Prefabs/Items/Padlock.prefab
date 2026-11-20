@@ -149,6 +149,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _color: {r: 1, g: 1, b: 1, a: 1}
+  _renderer: {fileID: 8531988782863334163}
+  _colorProperty: _BaseColor
 --- !u!65 &3816056426812410008
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1697,7 +1700,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: d01e36612987c8b4089cb0b3935ea83a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

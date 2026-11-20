@@ -1490,7 +1490,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 89e2a4b4222ef9c458692a32200723ad, type: 2}
+  - {fileID: 2100000, guid: d01e36612987c8b4089cb0b3935ea83a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1585,3 +1585,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EscapeWall.Items.Key
   _rigidbody: {fileID: 7103655989251593195}
   _id: -1
+  _color: {r: 1, g: 1, b: 1, a: 1}
+  _renderer: {fileID: 2698323444281576364}
+  _colorProperty: _BaseColor

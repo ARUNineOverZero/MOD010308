@@ -7,6 +7,9 @@ namespace EscapeWall
 {
     public class CameraEnterTrigger : MonoBehaviour
     {
+        [SerializeField] private Transform _player1Transform;
+        [SerializeField] private Transform _player2Transform;
+
         [SerializeField] private Transform _playerTransform;
         [SerializeField] private Vector3 _boxSize = Vector3.one;
 
@@ -26,7 +29,6 @@ namespace EscapeWall
 
         private void Update()
         {
-            // Fallback box check for the player (in case trigger doesn't catch them)
             bool playerInBox = IsInsideBox(_playerTransform);
             bool isInside = playerInBox || _playerInside || _interactables.Count > 0;
 
@@ -60,14 +62,12 @@ namespace EscapeWall
 
         private void OnTriggerEnter(Collider other)
         {
-            // Player entered via trigger
             if (IsPlayer(other.transform))
             {
                 _playerInside = true;
                 return;
             }
 
-            // Interactable item entered
             var interactable = other.GetComponentInParent<IInteractable>();
             if (interactable != null)
                 _interactables.Add(interactable);
@@ -75,17 +75,24 @@ namespace EscapeWall
 
         private void OnTriggerExit(Collider other)
         {
-            // Player exited via trigger
             if (IsPlayer(other.transform))
             {
                 _playerInside = false;
                 return;
             }
-
-            // Interactable item exited
             var interactable = other.GetComponentInParent<IInteractable>();
             if (interactable != null)
+            {
+                var comp = (Component)interactable;
+                if(comp != null)
+                {
+                    var localPosition =  transform.InverseTransformPoint(comp.transform.position);
+                    var parent = localPosition.z < 0  ? _player1Transform : _player2Transform;
+                    comp.transform.parent = parent;
+                }
+
                 _interactables.Remove(interactable);
+            }
         }
 
         private bool IsPlayer(Transform t)

@@ -15,8 +15,60 @@ namespace EscapeWall.Items
         [SerializeField] private TransformAnimation _correctKey;
         [SerializeField] private TransformAnimation _baseUnlock;
         private bool usingKey = false;
-
         public UnityEvent OnUnlocked;
+
+        [SerializeField] private Color _color = Color.white;
+
+        [Tooltip("Renderer that uses the shared material")]
+        [SerializeField] private Renderer _renderer;
+
+        [Tooltip("Shader color property name")]
+        [SerializeField] private string _colorProperty = "_BaseColor";
+
+        private MaterialPropertyBlock _propertyBlock;
+        private static readonly int ColorPropertyId = Shader.PropertyToID("_BaseColor");
+
+        private void Awake()
+        {
+            if (_renderer == null)
+                _renderer = GetComponentInChildren<Renderer>();
+
+            _propertyBlock = new MaterialPropertyBlock();
+            ApplyColor();
+        }
+
+        private void OnValidate()
+        {
+            if (_renderer == null)
+                _renderer = GetComponentInChildren<Renderer>();
+
+            ApplyColor();
+        }
+
+        private void ApplyColor()
+        {
+            if (_renderer == null) return;
+
+            if (_propertyBlock == null)
+                _propertyBlock = new MaterialPropertyBlock();
+
+            _renderer.GetPropertyBlock(_propertyBlock);
+
+            int propertyId = Shader.PropertyToID(_colorProperty);
+            if (_renderer.sharedMaterial != null && _renderer.sharedMaterial.HasProperty(propertyId))
+                _propertyBlock.SetColor(propertyId, _color);
+            else if (_renderer.sharedMaterial != null && _renderer.sharedMaterial.HasProperty("_BaseColor"))
+                _propertyBlock.SetColor("_BaseColor", _color);
+            else
+                _propertyBlock.SetColor("_Color", _color);
+
+            _renderer.SetPropertyBlock(_propertyBlock);
+        }
+        public void SetColor(Color newColor)
+        {
+            _color = newColor;
+            ApplyColor();
+        }
 
         private void OnTriggerEnter(Collider other)
         {

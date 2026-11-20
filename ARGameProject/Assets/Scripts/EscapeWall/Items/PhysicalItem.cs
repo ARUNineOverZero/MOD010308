@@ -10,7 +10,7 @@ namespace EscapeWall.Items
         protected InteractionState _state = InteractionState.None;
         public InteractionState State => _state;
 
-        public void Awake()
+        protected virtual void Awake()
         {
             if(_rigidbody == null)
                 _rigidbody = GetComponent<Rigidbody>();
