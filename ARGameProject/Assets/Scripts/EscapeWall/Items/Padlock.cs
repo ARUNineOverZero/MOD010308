@@ -31,7 +31,7 @@ namespace EscapeWall.Items
 
         public void UseKey(Key key)
         {
-            key.EndInteract();
+            key.EndInteraction();
             if (key.ID == _keyId)
                 PlayCorrectKey(key);
             else
@@ -79,8 +79,10 @@ namespace EscapeWall.Items
 
         private void Drop()
         {
-            GetComponent<Rigidbody>().isKinematic = false;
+            PhysicalItem pi = gameObject.AddComponent<PhysicalItem>();
+            pi.EnableRigidbody();
             OnUnlocked?.Invoke();
+
             Destroy(this);
         }
     }

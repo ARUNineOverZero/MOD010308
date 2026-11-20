@@ -20,7 +20,7 @@ namespace EscapeWall.PlayerComponents.Interaction
         {
             if(_currentInteraction == null || _currentInteraction.State == InteractionState.Ended) return;
             
-            _currentInteraction.EndInteract();
+            _currentInteraction.EndInteraction();
             _currentInteraction = null;
         }
 

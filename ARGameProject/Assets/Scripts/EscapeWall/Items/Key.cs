@@ -3,37 +3,38 @@ using UnityEngine;
 
 namespace EscapeWall.Items
 {
-    public class Key : MonoBehaviour, IInteractable
+    public class Key : PhysicalItem
     {
-        [SerializeField] private Rigidbody _rigidbody;
-        public Rigidbody Rigidbody => _rigidbody;
         [SerializeField] private int _id = -1;
-
         public int ID => _id;
-        private InteractionState _state = InteractionState.None;
+    }
+
+    public class PhysicalItem : MonoBehaviour, IInteractable
+    {
+        [SerializeField] protected Rigidbody _rigidbody;
+        public Rigidbody Rigidbody => _rigidbody;
+        protected InteractionState _state = InteractionState.None;
         public InteractionState State => _state;
+
+        public void Awake()
+        {
+            if(_rigidbody == null)
+                _rigidbody = GetComponent<Rigidbody>();
+        }
 
         public void BeginInteract()
         {
             _state = InteractionState.Began;
-            _rigidbody.isKinematic = true;
-            _rigidbody.interpolation = RigidbodyInterpolation.None;
-            _rigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-            transform.parent = GameManager.Instance.Player.transform;
-
+            GameManager.Instance.Player.PlayerHand.SetInHand(this);
         }
 
-        public void EndInteract()
+        public void EndInteraction()
         {
-            _state = InteractionState.Ended;
-            if (_rigidbody != null)
-            {
-                _rigidbody.isKinematic = false;
-                _rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
-                _rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-            }
+            if(_state == InteractionState.None || _state == InteractionState.Ended)
+                return;
 
-            transform.parent = null;
+            _state = InteractionState.None;
+            GameManager.Instance.Player.PlayerHand.Drop(this);
         }
 
         public void DisableRigidBody()

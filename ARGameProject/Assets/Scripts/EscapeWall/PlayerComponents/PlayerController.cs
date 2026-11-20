@@ -1,4 +1,5 @@
 using EscapeWall.PlayerComponents.Interaction;
+using TMPro;
 using UnityEngine;
 
 namespace EscapeWall.PlayerComponents

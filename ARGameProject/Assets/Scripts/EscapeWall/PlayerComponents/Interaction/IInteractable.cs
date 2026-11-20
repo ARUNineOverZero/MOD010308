@@ -4,7 +4,7 @@ namespace EscapeWall.PlayerComponents.Interaction
     {
         public InteractionState State {get;}
         void BeginInteract();
-        void EndInteract();
+        void EndInteraction();
     }
 
     public enum InteractionState

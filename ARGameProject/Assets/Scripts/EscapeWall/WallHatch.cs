@@ -117,7 +117,7 @@ namespace EscapeWall
 
         public void BeginInteract() => ToggleOpen();
 
-        public void EndInteract()
+        public void EndInteraction()
         {
             
         }

@@ -22,6 +22,9 @@ namespace EscapeWall
         public InteractionManager InteractionManager => _interactionManager;
         [SerializeField] private PlayerController _controller;
         public PlayerController Controller => _controller;
+        
+        [SerializeField] private PlayerHand _playerHand;
+        public PlayerHand PlayerHand => _playerHand;
         [SerializeField] private Camera _camera;
         public Camera Camera => _camera;
 
