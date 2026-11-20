@@ -92,7 +92,7 @@ namespace EscapeWall.PlayerComponents
                     fingerId = MouseFingerId,
                     touchId = MouseTouchId,
                     position = position,
-                    radius = 25,
+                    radius = 8f * Screen.dpi / 25.4f,
                     isOverUI = overUI
                 };
 
@@ -128,9 +128,9 @@ namespace EscapeWall.PlayerComponents
             Touch touch = finger.currentTouch;
             bool overUI = IsPointerOverUI(touch.touchId, touch.screenPosition);
 
-            var fingerId = _activeFingers.Count == 0 
-                            ? 0 
-                            : ActiveFingers.Values.Max(x => x.fingerId)+1;
+            var fingerId = _activeFingers.Count == 0
+                            ? 0
+                            : ActiveFingers.Values.Max(x => x.fingerId) + 1;
 
 
             FingerData data = new FingerData
@@ -138,7 +138,7 @@ namespace EscapeWall.PlayerComponents
                 fingerId = fingerId,
                 touchId = touch.touchId,
                 position = touch.screenPosition,
-                radius = Mathf.Max(touch.radius.x, touch.radius.y),
+                radius = 25f,
                 isOverUI = overUI
             };
 
@@ -165,6 +165,8 @@ namespace EscapeWall.PlayerComponents
             Touch touch = finger.currentTouch;
             if (!_activeFingers.TryGetValue(touch.touchId, out FingerData data)) return;
 
+            data.radius = GetTouchRadius(touch);
+
             data.position = touch.screenPosition;
             _activeFingers[touch.touchId] = data;
             OnFingerMove?.Invoke(data);
@@ -187,6 +189,15 @@ namespace EscapeWall.PlayerComponents
 
             finger = default;
             return false;
+        }
+
+        private float GetTouchRadius(Touch touch)
+        {
+            float reported = Mathf.Max(touch.radius.x, touch.radius.y);
+            if (reported > 1f)
+                return reported;
+
+            return 8f * Screen.dpi / 25.4f;
         }
     }
 }
