@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace EscapeWall.PlayerComponents
 {
+    using System;
     using UnityEngine;
 
     public class PlayerHand : MonoBehaviour
@@ -25,17 +26,22 @@ namespace EscapeWall.PlayerComponents
 
         [SerializeField] private IInteractable _inHand;
         [SerializeField] private Rigidbody _rigidbody;
-
+        private float _radius;
+        private Vector3 _screenPosition;
+        public bool HasItem => _rigidbody != null && _inHand != null;
         private Quaternion _targetRotation;
 
         public bool IsHoldingItem => _rigidbody != null;
 
         private void FixedUpdate() => HandleHoveringPhysical();
 
-        public bool SetInHand(IInteractable item)
+        public bool SetInHand(IInteractable item, Vector3 screenPosition, float radius)
         {
             if (_inHand != null)
                 _inHand.EndInteraction();
+
+            _screenPosition = screenPosition;
+             _radius = radius;
 
             Rigidbody rb = ((Component)item)?.gameObject.GetComponent<Rigidbody>();
 
@@ -49,28 +55,10 @@ namespace EscapeWall.PlayerComponents
             Handheld.Vibrate();
 #endif
 
-            //_rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
-
-            //Quaternion relativeRotation = Quaternion.Inverse(transform.rotation) * _rigidbody.rotation;
-            //float relativeY = relativeRotation.eulerAngles.y;
-            //float snappedY = Mathf.Round(relativeY / 90f) * 90f;
-            //_targetRotation = Quaternion.Euler(0, snappedY, 0);
-
             grabDistance = Vector3.Distance(_rigidbody.transform.position, transform.position);
             grabDistance = Mathf.Clamp(grabDistance, minGrabDistance, maxGrabDistance);
 
             return true;
-        }
-
-        public void Throw()
-        {
-            if (_rigidbody == null) return;
-
-            Rigidbody rb = _rigidbody;
-            Drop();
-
-            if (_camera != null)
-                rb.AddForce(_camera.transform.forward * throwForce, ForceMode.Impulse);
         }
 
         public void Drop(IInteractable item = null)
@@ -91,8 +79,9 @@ namespace EscapeWall.PlayerComponents
         private void HandleHoveringPhysical()
         {
             if (_rigidbody == null || _camera == null) return;
-
-            Vector3 targetPosition = _camera.transform.position + (_camera.transform.forward * grabDistance);
+            
+            var ray = _camera.ScreenPointToRay(new Vector2(_screenPosition.x, _screenPosition.y + _radius * 2));
+            Vector3 targetPosition = _camera.transform.position + (ray.direction * grabDistance);
             Vector3 directionToTarget = targetPosition - _rigidbody.transform.position;
             _rigidbody.linearVelocity = directionToTarget * hoverSpeed;
 
@@ -115,6 +104,12 @@ namespace EscapeWall.PlayerComponents
             float direction = Mathf.Sign(scrollDelta);
             grabDistance += direction * scrollSensitivity;
             grabDistance = Mathf.Clamp(grabDistance, minGrabDistance, maxGrabDistance);
+        }
+
+        public void UpdateScreenPosition(Vector2 screenPosition, float radius)
+        {
+            _screenPosition = screenPosition;
+            _radius = radius;
         }
     }
 }

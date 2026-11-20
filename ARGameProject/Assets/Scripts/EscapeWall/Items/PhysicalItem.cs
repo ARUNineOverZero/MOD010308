@@ -18,8 +18,12 @@ namespace EscapeWall.Items
 
         public void BeginInteract()
         {
+        }
+
+        public void BeginInteract(Vector3 screenPosition, float radius)
+        {
             _state = InteractionState.Began;
-            GameManager.Instance.Player.PlayerHand.SetInHand(this);
+            GameManager.Instance.Player.PlayerHand.SetInHand(this, screenPosition, radius);
         }
 
         public void EndInteraction()
@@ -48,5 +52,6 @@ namespace EscapeWall.Items
             _rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             _rigidbody.WakeUp();
         }
+
     }
 }

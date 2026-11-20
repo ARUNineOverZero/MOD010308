@@ -10,6 +10,7 @@ namespace EscapeWall.PlayerComponents
         [SerializeField] private PlayerInputHandler _inputHandler;
         [SerializeField] private Camera _camera;
         [SerializeField] private InteractionManager _interactionManager;
+        [SerializeField] private PlayerHand _playerHand;
 
         [Header("Interaction Settings")]
         [SerializeField] private float _interactionDistance = 5f;
@@ -75,12 +76,12 @@ namespace EscapeWall.PlayerComponents
             switch (data.fingerId)
             {
                 case 0:
-                    if(TryIteract(data.position, out IInteractable interactable))
-                        _interactionManager.BeginInteraction(interactable);
+                    if (TryIteract(data.position, out IInteractable interactable))
+                        _interactionManager.BeginInteraction(interactable, data.position, data.radius);
                     break;
-                case 1:
-                    GameManager.Instance.Player.PlayerHand.Throw();
-                    break;
+                //case 1:
+                //GameManager.Instance.Player.PlayerHand.Throw();
+                //break;
                 default:
                     break;
             }
@@ -91,13 +92,17 @@ namespace EscapeWall.PlayerComponents
             switch (data.fingerId)
             {
                 case 0:
-                    if(TryIteract(data.position, out IInteractable interactable))
+                    if (_playerHand.HasItem)
+                    {
+                        _playerHand.UpdateScreenPosition(data.position, data.radius);
+                    }
+                    else if (TryIteract(data.position, out IInteractable interactable))
                         _interactionManager.MoveInteraction();
                     break;
                 default:
                     break;
             }
-            
+
         }
 
         private void HandleFingerUp(PlayerInputHandler.FingerData data)

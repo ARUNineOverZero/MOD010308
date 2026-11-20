@@ -121,5 +121,7 @@ namespace EscapeWall.Interactive
         {
 
         }
+
+        public void BeginInteract(Vector3 screenPosition, float radius) => ToggleOpen();
     }
 }

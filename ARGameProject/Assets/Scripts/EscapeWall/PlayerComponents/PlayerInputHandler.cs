@@ -25,6 +25,7 @@ namespace EscapeWall.PlayerComponents
             public int fingerId;
             public int touchId;
             public Vector2 position;
+            public float radius;
             public bool isOverUI;
         }
 
@@ -91,6 +92,7 @@ namespace EscapeWall.PlayerComponents
                     fingerId = MouseFingerId,
                     touchId = MouseTouchId,
                     position = position,
+                    radius = 25,
                     isOverUI = overUI
                 };
 
@@ -130,11 +132,13 @@ namespace EscapeWall.PlayerComponents
                             ? 0 
                             : ActiveFingers.Values.Max(x => x.fingerId)+1;
 
+
             FingerData data = new FingerData
             {
                 fingerId = fingerId,
                 touchId = touch.touchId,
                 position = touch.screenPosition,
+                radius = Mathf.Max(touch.radius.x, touch.radius.y),
                 isOverUI = overUI
             };
 

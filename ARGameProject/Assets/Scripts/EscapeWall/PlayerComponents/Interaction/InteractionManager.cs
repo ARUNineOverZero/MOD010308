@@ -8,11 +8,11 @@ namespace EscapeWall.PlayerComponents.Interaction
         private IInteractable _currentInteraction;
         public IInteractable CurrentInteraction => _currentInteraction;
 
-        public void BeginInteraction(IInteractable interactable)
+        public void BeginInteraction(IInteractable interactable, Vector3 screenPosition, float radius)
         {
             if(interactable == null) return;
 
-            interactable.BeginInteract();
+            interactable.BeginInteract(screenPosition, radius);
             _currentInteraction = interactable;
         }
 
