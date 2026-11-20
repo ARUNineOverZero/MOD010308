@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -125,9 +126,13 @@ namespace EscapeWall.PlayerComponents
             Touch touch = finger.currentTouch;
             bool overUI = IsPointerOverUI(touch.touchId, touch.screenPosition);
 
+            var fingerId = _activeFingers.Count == 0 
+                            ? 0 
+                            : ActiveFingers.Values.Max(x => x.fingerId)+1;
+
             FingerData data = new FingerData
             {
-                fingerId = _activeFingers.Count,
+                fingerId = fingerId,
                 touchId = touch.touchId,
                 position = touch.screenPosition,
                 isOverUI = overUI
