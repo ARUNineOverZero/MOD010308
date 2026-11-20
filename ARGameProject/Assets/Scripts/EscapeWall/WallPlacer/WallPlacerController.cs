@@ -110,7 +110,7 @@ namespace EscapeWall.WallPlacer
                     _area.pointA = hitPosition;
                     SpawnMarker(_area.pointA);
                     _stage = PlacementStage.GetSecondPoint;
-                    SpawnMarker(_area.pointA); 
+                    SpawnMarker(_area.pointA);
                     GameManager.Instance.SetPlaneVisibility(false);
 
                     StartPreviewUpdate();
@@ -147,6 +147,32 @@ namespace EscapeWall.WallPlacer
                 UpdatePreviewFromCamera();
                 yield return null;
             }
+        }
+
+        private void MaybeUpdatePreviewFromCamera()
+        {
+            if (_arCamera == null || !_area.IsValid) return;
+
+            Transform cam = _arCamera.transform;
+            Vector3 origin = cam.position;
+            Vector3 direction = cam.forward;
+
+            if (Mathf.Approximately(direction.y, 0f))
+                return;
+
+            float planeY = _area.pointA.y;
+            float t = (planeY - origin.y) / direction.y;
+
+            if (t < 0f)
+                return;
+
+            Vector3 hitPoint = origin + direction * t;
+            _area.pointB = hitPoint;
+
+            if (_tempMarkers.Count > 1)
+                _tempMarkers[^1].transform.position = _area.pointB + (_area.pointB - _area.pointA).normalized * 0.5f;
+
+            UpdatePreviewPlane();
         }
 
         private void UpdatePreviewFromCamera()
