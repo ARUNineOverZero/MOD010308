@@ -19,8 +19,8 @@ namespace EscapeWall.PlayerComponents
         public float throwForce = 15f;
 
         [Header("Grab Distance Settings")]
-        public float minGrabDistance = 1f;
-        public float maxGrabDistance = 1.5f;
+        public float minGrabDistance = .25f;
+        public float maxGrabDistance = .5f;
         public float scrollSensitivity = .1f;
 
         [SerializeField] private IInteractable _inHand;
@@ -44,6 +44,10 @@ namespace EscapeWall.PlayerComponents
 
             _inHand = item;
             _rigidbody = rb;
+
+#if UNITY_ANDROID || UNITY_IOS
+            Handheld.Vibrate();
+#endif
 
             //_rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 
@@ -92,7 +96,7 @@ namespace EscapeWall.PlayerComponents
             Vector3 directionToTarget = targetPosition - _rigidbody.transform.position;
             _rigidbody.linearVelocity = directionToTarget * hoverSpeed;
 
-            Quaternion rotationDifference = Quaternion.Euler(0, transform.eulerAngles.y, 0) * _targetRotation ;
+            Quaternion rotationDifference = Quaternion.Euler(0, transform.eulerAngles.y, 0) * _targetRotation;
             rotationDifference.ToAngleAxis(out float angleInDegrees, out Vector3 rotationAxis);
 
             if (angleInDegrees > 180f)

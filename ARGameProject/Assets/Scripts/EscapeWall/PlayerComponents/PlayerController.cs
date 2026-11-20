@@ -74,9 +74,12 @@ namespace EscapeWall.PlayerComponents
         {
             switch (data.fingerId)
             {
-                case 1:
+                case 0:
                     if(TryIteract(data.position, out IInteractable interactable))
                         _interactionManager.BeginInteraction(interactable);
+                    break;
+                case 1:
+                    GameManager.Instance.Player.PlayerHand.Throw();
                     break;
                 default:
                     break;
@@ -87,7 +90,7 @@ namespace EscapeWall.PlayerComponents
         {
             switch (data.fingerId)
             {
-                case 1:
+                case 0:
                     if(TryIteract(data.position, out IInteractable interactable))
                         _interactionManager.MoveInteraction();
                     break;
@@ -101,7 +104,7 @@ namespace EscapeWall.PlayerComponents
         {
             switch (data.fingerId)
             {
-                case 1:
+                case 0:
                     _interactionManager.EndInteraction();
                     break;
                 default:

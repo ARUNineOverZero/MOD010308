@@ -331,7 +331,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1747
+  m_VersionIndex: 1753
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -958,6 +958,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4501138445561895784}
+  - component: {fileID: 5681367777335022977}
   m_Layer: 0
   m_Name: Hidden
   m_TagString: Untagged
@@ -980,6 +981,142 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1530808642132041107}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5681367777335022977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2426822828059904394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dee588895e162394da357a99793caae7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EscapeWall.WallSide
+--- !u!1 &2694866438635602959
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1743885931399837793}
+  - component: {fileID: 5198665301423006907}
+  - component: {fileID: 4717582773007573175}
+  m_Layer: 9
+  m_Name: PhonePassTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1743885931399837793
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2694866438635602959}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.84375, y: 1, z: -0.06250883}
+  m_LocalScale: {x: 1, y: 2, z: 0.125}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 579551675974728143}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &5198665301423006907
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2694866438635602959}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4717582773007573175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2694866438635602959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 224802ddb55565a46897d027195f9aea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EscapeWall.CameraEnterTrigger
+  _player1Transform: {fileID: 2773988426202102074}
+  _player2Transform: {fileID: 3355553616591142033}
+  _playerTransform: {fileID: 0}
+  _boxSize: {x: 1, y: 1, z: 1}
+  OnEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 242441220937312468}
+        m_TargetAssemblyTypeName: EscapeWall.WallHatch, Assembly-CSharp
+        m_MethodName: PreventClose
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7244546793473068209}
+        m_TargetAssemblyTypeName: EscapeWall.WallHatch, Assembly-CSharp
+        m_MethodName: PreventClose
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnExit:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 242441220937312468}
+        m_TargetAssemblyTypeName: EscapeWall.WallHatch, Assembly-CSharp
+        m_MethodName: AllowClose
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7244546793473068209}
+        m_TargetAssemblyTypeName: EscapeWall.WallHatch, Assembly-CSharp
+        m_MethodName: AllowClose
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2882739672795699226
 GameObject:
   m_ObjectHideFlags: 0
@@ -1292,6 +1429,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2773988426202102074}
+  - component: {fileID: 7326688050346966404}
   m_Layer: 0
   m_Name: Hidden
   m_TagString: Untagged
@@ -1316,6 +1454,18 @@ Transform:
   - {fileID: 68897928056953508}
   m_Father: {fileID: 579551675974728143}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7326688050346966404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4252535757736020430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dee588895e162394da357a99793caae7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EscapeWall.WallSide
 --- !u!1 &5119646245812776312
 GameObject:
   m_ObjectHideFlags: 0
@@ -1350,6 +1500,7 @@ Transform:
   - {fileID: 2618629527978899220}
   - {fileID: 1530808642132041107}
   - {fileID: 3355553616591142033}
+  - {fileID: 1743885931399837793}
   - {fileID: 2773988426202102074}
   - {fileID: 6265526633025536111}
   m_Father: {fileID: 0}
@@ -1430,6 +1581,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1530808642132041107}
+  - component: {fileID: 2175497706244215211}
   m_Layer: 0
   m_Name: Player1
   m_TagString: Untagged
@@ -1458,6 +1610,18 @@ Transform:
   - {fileID: 4501138445561895784}
   m_Father: {fileID: 579551675974728143}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2175497706244215211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6723962318833543332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dee588895e162394da357a99793caae7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EscapeWall.WallSide
 --- !u!1 &7037544380634215301
 GameObject:
   m_ObjectHideFlags: 0
@@ -1856,6 +2020,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3355553616591142033}
+  - component: {fileID: 8580208439532032285}
   m_Layer: 0
   m_Name: Player2
   m_TagString: Untagged
@@ -1879,6 +2044,18 @@ Transform:
   - {fileID: 5601472113631435475}
   m_Father: {fileID: 579551675974728143}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8580208439532032285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8056535530929499090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dee588895e162394da357a99793caae7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EscapeWall.WallSide
 --- !u!1 &8093470316296745200
 GameObject:
   m_ObjectHideFlags: 0
@@ -1925,7 +2102,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2323046122620220582, guid: 3dfc8bb9b0678ba44914bbfe8ef66ddb, type: 3}
       propertyPath: m_VersionIndex
-      value: 8520
+      value: 8526
       objectReference: {fileID: 0}
     - target: {fileID: 2323046122620220582, guid: 3dfc8bb9b0678ba44914bbfe8ef66ddb, type: 3}
       propertyPath: m_SelectedEdges.Array.size
@@ -2091,11 +2268,11 @@ PrefabInstance:
       objectReference: {fileID: 7244546793473068209}
     - target: {fileID: 2089803064592875354, guid: dcb5455b1c1fe534087c2afa91e2b66a, type: 3}
       propertyPath: m_VersionIndex
-      value: 4423
+      value: 4429
       objectReference: {fileID: 0}
     - target: {fileID: 2268118522705003283, guid: dcb5455b1c1fe534087c2afa91e2b66a, type: 3}
       propertyPath: m_VersionIndex
-      value: 3232
+      value: 3238
       objectReference: {fileID: 0}
     - target: {fileID: 2991826325372311650, guid: dcb5455b1c1fe534087c2afa91e2b66a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2458,7 +2635,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1783905149763798900, guid: 7bbe311489d695248bda3e92771193fe, type: 3}
       propertyPath: m_VersionIndex
-      value: 6014
+      value: 6020
       objectReference: {fileID: 0}
     - target: {fileID: 1783905149763798900, guid: 7bbe311489d695248bda3e92771193fe, type: 3}
       propertyPath: m_SelectedEdges.Array.size
@@ -2486,7 +2663,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4178156380215980164, guid: 7bbe311489d695248bda3e92771193fe, type: 3}
       propertyPath: m_VersionIndex
-      value: 6030
+      value: 6036
       objectReference: {fileID: 0}
     - target: {fileID: 4300651978044426729, guid: 7bbe311489d695248bda3e92771193fe, type: 3}
       propertyPath: m_VersionIndex
@@ -2542,7 +2719,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6518379210142812573, guid: 7bbe311489d695248bda3e92771193fe, type: 3}
       propertyPath: m_VersionIndex
-      value: 6007
+      value: 6013
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2635,7 +2812,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1783905149763798900, guid: 7bbe311489d695248bda3e92771193fe, type: 3}
       propertyPath: m_VersionIndex
-      value: 5948
+      value: 5954
       objectReference: {fileID: 0}
     - target: {fileID: 1783905149763798900, guid: 7bbe311489d695248bda3e92771193fe, type: 3}
       propertyPath: m_SelectedEdges.Array.size
@@ -2663,11 +2840,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4178156380215980164, guid: 7bbe311489d695248bda3e92771193fe, type: 3}
       propertyPath: m_VersionIndex
-      value: 5964
+      value: 5970
       objectReference: {fileID: 0}
     - target: {fileID: 4300651978044426729, guid: 7bbe311489d695248bda3e92771193fe, type: 3}
       propertyPath: m_VersionIndex
-      value: 6036
+      value: 6042
       objectReference: {fileID: 0}
     - target: {fileID: 5479602715190629989, guid: 7bbe311489d695248bda3e92771193fe, type: 3}
       propertyPath: m_SelectedEditorRenderState
@@ -2719,7 +2896,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6518379210142812573, guid: 7bbe311489d695248bda3e92771193fe, type: 3}
       propertyPath: m_VersionIndex
-      value: 5941
+      value: 5947
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2741,7 +2918,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 183093312466120293, guid: 38862b56ba0acee4387487494d89d575, type: 3}
       propertyPath: m_VersionIndex
-      value: 7812
+      value: 7818
       objectReference: {fileID: 0}
     - target: {fileID: 5934869289674863323, guid: 38862b56ba0acee4387487494d89d575, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2867,7 +3044,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7350851338238470446, guid: 0e20883af1f9db842b5d1e1fcbb64808, type: 3}
       propertyPath: m_VersionIndex
-      value: 1672
+      value: 1678
       objectReference: {fileID: 0}
     - target: {fileID: 7768353691109182396, guid: 0e20883af1f9db842b5d1e1fcbb64808, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2915,7 +3092,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9212780123073833450, guid: 0e20883af1f9db842b5d1e1fcbb64808, type: 3}
       propertyPath: m_VersionIndex
-      value: 3442
+      value: 3448
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3028,11 +3205,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7103655989251593195, guid: 3dfc8bb9b0678ba44914bbfe8ef66ddb, type: 3}
       propertyPath: m_Interpolate
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7103655989251593195, guid: 3dfc8bb9b0678ba44914bbfe8ef66ddb, type: 3}
       propertyPath: m_CollisionDetection
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3058,7 +3235,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2323046122620220582, guid: 3dfc8bb9b0678ba44914bbfe8ef66ddb, type: 3}
       propertyPath: m_VersionIndex
-      value: 8520
+      value: 8526
       objectReference: {fileID: 0}
     - target: {fileID: 2323046122620220582, guid: 3dfc8bb9b0678ba44914bbfe8ef66ddb, type: 3}
       propertyPath: m_SelectedEdges.Array.size

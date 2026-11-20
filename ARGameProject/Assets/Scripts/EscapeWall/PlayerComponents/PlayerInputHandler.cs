@@ -14,13 +14,15 @@ namespace EscapeWall.PlayerComponents
         [SerializeField] private bool _ignoreTouchesOverUI = true;
 
 #if UNITY_EDITOR
-        private const int MouseFingerId = 1;
+        private const int MouseFingerId = 0;
+        private const int MouseTouchId = 0;
         private bool _mouseWasDown;
 #endif
 
         public struct FingerData
         {
             public int fingerId;
+            public int touchId;
             public Vector2 position;
             public bool isOverUI;
         }
@@ -86,6 +88,7 @@ namespace EscapeWall.PlayerComponents
                 FingerData data = new FingerData
                 {
                     fingerId = MouseFingerId,
+                    touchId = MouseTouchId,
                     position = position,
                     isOverUI = overUI
                 };
@@ -124,7 +127,8 @@ namespace EscapeWall.PlayerComponents
 
             FingerData data = new FingerData
             {
-                fingerId = touch.touchId,
+                fingerId = _activeFingers.Count,
+                touchId = touch.touchId,
                 position = touch.screenPosition,
                 isOverUI = overUI
             };
