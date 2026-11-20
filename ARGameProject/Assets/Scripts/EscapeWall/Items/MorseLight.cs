@@ -9,6 +9,10 @@ namespace EscapeWall.Items
     {
         [Header("References")]
         [SerializeField] private Light _light;
+        [SerializeField] private Renderer _renderer;
+        [Header("Emission")]
+        [SerializeField] private Color _emissionColor = Color.white;
+        [SerializeField] private float _emissionIntensity = 2f;
 
         [Header("Message")]
         [SerializeField] private string _message = "SOS";
@@ -29,6 +33,10 @@ namespace EscapeWall.Items
         private Coroutine _blinkCoroutine;
         private string _currentMorse;
         private bool _isPlaying;
+        private bool _isOn;
+
+        private MaterialPropertyBlock _propBlock;
+        private static readonly int EmissionColorId = Shader.PropertyToID("_EmissionColor");
 
         private static readonly Dictionary<char, string> MorseMap = new()
         {
@@ -54,7 +62,25 @@ namespace EscapeWall.Items
             if (_light == null)
                 _light = GetComponent<Light>();
 
-            SetLight(_startOn);
+            if (_renderer == null)
+                _renderer = GetComponent<Renderer>();
+
+            _propBlock = new MaterialPropertyBlock();
+            _isOn = _startOn;
+            SetLight(_isOn);
+        }
+
+        private void OnEnable()
+        {
+            SetLight(_isOn);
+
+            if (_playOnStart && !string.IsNullOrWhiteSpace(_message))
+                PlayText(_message);
+        }
+
+        private void OnDisable()
+        {
+            Stop();
         }
 
         private void Start()
@@ -144,8 +170,22 @@ namespace EscapeWall.Items
 
         private void SetLight(bool on)
         {
+            _isOn = on;
+
             if (_light != null)
                 _light.enabled = on;
+
+            if (_renderer != null && _propBlock != null)
+            {
+                _renderer.GetPropertyBlock(_propBlock);
+
+                if (on)
+                    _propBlock.SetColor(EmissionColorId, _emissionColor * _emissionIntensity);
+                else
+                    _propBlock.SetColor(EmissionColorId, Color.black);
+
+                _renderer.SetPropertyBlock(_propBlock);
+            }
         }
 
         public static string TextToMorse(string text)
