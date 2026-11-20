@@ -1,6 +1,5 @@
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace EscapeWall
 {
@@ -8,19 +7,31 @@ namespace EscapeWall
     {
         [Header("References")]
         public Camera arCamera;
-        public GameObject blackScreen;
+        [SerializeField] private GameObject _worldRoot;
+        [SerializeField] private Transform _arrow;
+        [SerializeField] private Transform _ball;
 
-        [Header("Circle Indicator")]
-        [SerializeField] private RectTransform _circle;
-        [SerializeField] private float _minCircleScale = 0.2f;
-        [SerializeField] private float _maxCircleScale = 2.5f;
-        [SerializeField] private float _referenceDistance = 1.5f;
+        [Header("Layers")]
+        [SerializeField] private string _hiddenLayerName = "WorldHidden";
+        [SerializeField] private LayerMask _layersToIgnore; 
+
+        private int _hiddenLayer;
+        private int _originalLayer;
 
         [Header("Sphere Check")]
         public float sphereRadius = 0.05f;
 
+        [Header("Ball Screen Size")]
+        [SerializeField] private float _minScreenSize = 40f;  
+        [SerializeField] private float _maxScreenSize = 200f; 
+        [SerializeField] private float _referenceDistance = 1.5f;
+        [SerializeField] private float _baseBallScale = 0.1f;
+
         [Header("Filtering")]
         public LayerMask blockingLayers = ~0;
+
+        [Header("Arrow")]
+        [SerializeField] private float _arrowDistance = 0.4f;   
 
         private Vector3 _lockPosition;
         private bool _isLocked;
@@ -33,11 +44,15 @@ namespace EscapeWall
 
             _previousPosition = arCamera.transform.position;
 
-            if (blackScreen != null)
-                blackScreen.SetActive(false);
+            if (_arrow != null)
+                _arrow.gameObject.SetActive(false);
 
-            if (_circle != null)
-                _circle.gameObject.SetActive(false);
+            if (_ball != null)
+                _ball.gameObject.SetActive(false);
+
+            _hiddenLayer = LayerMask.NameToLayer(_hiddenLayerName);
+            if (_worldRoot != null)
+                _originalLayer = _worldRoot.layer;
         }
 
         private void Update()
@@ -57,32 +72,54 @@ namespace EscapeWall
                 SetLock(false);
 
             if (_isLocked)
-                UpdateCircle();
+                UpdateIndicators();
 
             _previousPosition = currentPos;
         }
 
-        private void UpdateCircle()
+        private void UpdateIndicators()
         {
-            if (_circle == null || arCamera == null)
-                return;
+            bool ballOnScreen = false;
 
-            Vector3 screenPoint = arCamera.WorldToScreenPoint(_lockPosition);
-
-            if (screenPoint.z <= 0f)
+            if (_ball != null)
             {
-                _circle.gameObject.SetActive(false);
-                return;
+                _ball.gameObject.SetActive(true);
+                _ball.position = _lockPosition;
+
+                Vector3 screenPoint = arCamera.WorldToScreenPoint(_lockPosition);
+
+                if (screenPoint.z > 0f)
+                {
+                    ballOnScreen = screenPoint.x > 0f && screenPoint.x < Screen.width
+                                   && screenPoint.y > 0f && screenPoint.y < Screen.height;
+
+                    float distance = Vector3.Distance(arCamera.transform.position, _lockPosition);
+                    float t = Mathf.Clamp01(_referenceDistance / Mathf.Max(distance, 0.01f));
+                    float targetScreenSize = Mathf.Lerp(_minScreenSize, _maxScreenSize, t);
+
+                    float worldScale = targetScreenSize * distance / (arCamera.pixelHeight * 0.5f) * Mathf.Tan(arCamera.fieldOfView * 0.5f * Mathf.Deg2Rad);
+                    worldScale = Mathf.Max(worldScale, 0.01f);
+
+                    _ball.localScale = Vector3.one * worldScale;
+                }
+                else
+                    _ball.localScale = Vector3.one * _baseBallScale;
+                
             }
 
-            _circle.gameObject.SetActive(true);
-            _circle.position = screenPoint;
+            if (_arrow != null)
+            {
+                _arrow.gameObject.SetActive(!ballOnScreen);
 
-            float distance = Vector3.Distance(arCamera.transform.position, _lockPosition);
-            float t = Mathf.Clamp01(_referenceDistance / Mathf.Max(distance, 0.01f));
-            float scale = Mathf.Lerp(_minCircleScale, _maxCircleScale, t);
+                if (!ballOnScreen)
+                {
+                    _arrow.position = arCamera.transform.position + arCamera.transform.forward * _arrowDistance;
 
-            _circle.localScale = Vector3.one * scale;
+                    Vector3 lookDir = _lockPosition - _arrow.position;
+                    if (lookDir.sqrMagnitude > 0.001f)
+                        _arrow.rotation = Quaternion.LookRotation(lookDir);
+                }
+            }
         }
 
         private bool IsSphereOverlapping(Vector3 center, out Collider[] hits)
@@ -111,13 +148,29 @@ namespace EscapeWall
         {
             _isLocked = locked;
 
-            if (blackScreen != null)
-                blackScreen.SetActive(locked);
+            if (_worldRoot != null)
+                SetLayerRecursive(_worldRoot, locked ? _hiddenLayer : _originalLayer);
 
-            if (_circle != null)
-                _circle.gameObject.SetActive(locked);
+
+            if (!locked)
+            {
+                if (_arrow != null)
+                    _arrow.gameObject.SetActive(false);
+
+                if (_ball != null)
+                    _ball.gameObject.SetActive(false);
+            }
 
             Debug.Log(locked ? "Screen Lock" : "Screen Unlock");
+        }
+
+        private void SetLayerRecursive(GameObject obj, int layer)
+        {
+            if ((_layersToIgnore.value & (1 << obj.layer)) == 0)
+                obj.layer = layer;
+
+            foreach (Transform child in obj.transform)
+                SetLayerRecursive(child.gameObject, layer);
         }
 
         public void SetLockPosition(Vector3 position)

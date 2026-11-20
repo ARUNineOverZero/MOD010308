@@ -16,7 +16,7 @@ TagManager:
   - PlayerOneOnly
   - PlayerTwoOnly
   - TriggerPhysics
-  - 
+  - WorldHidden
   - 
   - 
   - 
