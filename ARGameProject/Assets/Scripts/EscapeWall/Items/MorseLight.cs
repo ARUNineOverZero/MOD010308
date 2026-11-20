@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -10,6 +11,8 @@ namespace EscapeWall.Items
         [Header("References")]
         [SerializeField] private Light _light;
         [SerializeField] private Renderer _renderer;
+        [SerializeField] private MorseToneSource _toneSource;
+
         [Header("Emission")]
         [SerializeField] private Color _emissionColor = Color.white;
         [SerializeField] private float _emissionIntensity = 2f;
@@ -65,6 +68,9 @@ namespace EscapeWall.Items
             if (_renderer == null)
                 _renderer = GetComponent<Renderer>();
 
+            if (_toneSource == null)
+                _toneSource = GetComponent<MorseToneSource>();
+
             _propBlock = new MaterialPropertyBlock();
             _isOn = _startOn;
             SetLight(_isOn);
@@ -78,16 +84,7 @@ namespace EscapeWall.Items
                 PlayText(_message);
         }
 
-        private void OnDisable()
-        {
-            Stop();
-        }
-
-        private void Start()
-        {
-            if (_playOnStart && !string.IsNullOrWhiteSpace(_message))
-                PlayText(_message);
-        }
+        private void OnDisable() => Stop();
 
         public void PlayText(string text)
         {
@@ -186,6 +183,9 @@ namespace EscapeWall.Items
 
                 _renderer.SetPropertyBlock(_propBlock);
             }
+
+            if (_toneSource != null)
+                _toneSource.SetTone(on);
         }
 
         public static string TextToMorse(string text)
