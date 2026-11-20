@@ -100,7 +100,8 @@ namespace EscapeWall.Items
 
             StartCoroutine(_incorrectKey.Play(null, () =>
             {
-                t.parent = null;
+                var parent = GetComponentInParent<WallSide>();
+                t.parent = parent?.transform;
                 key.EnableRigidbody();
                 StartCoroutine(RemoveKey());
             }));
@@ -108,7 +109,7 @@ namespace EscapeWall.Items
 
         private IEnumerator RemoveKey()
         {
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(1);
             usingKey = false;
         }
 
@@ -117,6 +118,7 @@ namespace EscapeWall.Items
             usingKey = true;
             Transform t = key.transform;
             Destroy(key.Rigidbody);
+            Destroy(key);
             t.parent = _keyAnchor;
             t.localPosition = Vector3.zero;
             t.localRotation = Quaternion.identity;
